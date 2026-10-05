@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Studio Beauty | Reserva tu cita</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <section class="booking-card">
+      <header class="brand-block">
+        <img src="logo.png" alt="Studio Beauty - Salón de belleza y estética" class="brand-logo" />
+        <h1>Reserva tu cita</h1>
+        <p>Uñas · Atención de lunes a sábado, 8:00 a. m. a 6:00 p. m.</p>
+      </header>
+
+      <section class="step-card">
+        <div class="step-title"><span>1</span><h2>Elige tu servicio</h2></div>
+        <div id="servicesGrid" class="services-grid"></div>
+        <p id="servicesStatus" class="helper-text">Cargando servicios...</p>
+      </section>
+
+      <section class="step-card">
+        <div class="step-title"><span>2</span><h2>Selecciona la fecha</h2></div>
+        <input id="dateInput" type="date" />
+        <p class="helper-text">No atendemos domingos.</p>
+      </section>
+
+      <section class="step-card">
+        <div class="step-title"><span>3</span><h2>Escoge un horario</h2></div>
+        <div id="timesGrid" class="times-grid"></div>
+        <p id="timesStatus" class="helper-text">Primero selecciona un servicio y una fecha.</p>
+      </section>
+
+      <section class="step-card">
+        <div class="step-title"><span>4</span><h2>Tus datos</h2></div>
+        <form id="bookingForm" class="booking-form">
+          <label>
+            Nombre
+            <input id="nameInput" type="text" placeholder="Tu nombre" autocomplete="name" required />
+          </label>
+          <label>
+            WhatsApp
+            <input id="phoneInput" type="tel" placeholder="300 000 0000" inputmode="tel" required />
+          </label>
+
+          <div class="summary-box">
+            <strong>Resumen</strong>
+            <p id="summaryText">Aún no has seleccionado tu cita.</p>
+          </div>
+
+          <button id="bookButton" type="submit" disabled>Reservar cita</button>
+          <p id="formStatus" class="form-status" aria-live="polite"></p>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
