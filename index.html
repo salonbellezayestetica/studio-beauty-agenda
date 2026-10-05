@@ -2,61 +2,109 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Studio Beauty | Reserva tu cita</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f8efe8" />
+  <title>Studio Beauty | Agenda tu cita</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="page-shell">
-    <section class="booking-card">
-      <header class="brand-block">
-        <img src="logo.png" alt="Studio Beauty - Salón de belleza y estética" class="brand-logo" />
-        <h1>Reserva tu cita</h1>
-        <p>Uñas · Atención de lunes a sábado, 8:00 a. m. a 6:00 p. m.</p>
-      </header>
+  <div class="app">
+    <header class="nav" id="nav">
+      <button id="backButton" class="nav-btn hidden" type="button" aria-label="Volver">‹</button>
+      <div class="nav-spacer"></div>
+      <button id="homeButton" class="nav-btn hidden" type="button" aria-label="Inicio">⌂</button>
+    </header>
 
-      <section class="step-card">
-        <div class="step-title"><span>1</span><h2>Elige tu servicio</h2></div>
-        <div id="servicesGrid" class="services-grid"></div>
-        <p id="servicesStatus" class="helper-text">Cargando servicios...</p>
+    <main>
+      <section id="home" class="screen active home-screen" data-screen="home">
+        <div class="home-ornament left"></div>
+        <div class="home-ornament right"></div>
+        <div class="floral floral-one"></div>
+        <div class="floral floral-two"></div>
+        <div class="home-inner">
+          <div class="hero-copy">
+            <h1>Resalta tu <em>belleza</em></h1>
+            <p>Agenda tu cita de manera<br>fácil y rápida</p>
+          </div>
+          <img src="logo.png" class="home-logo" alt="Studio Beauty - Salón de belleza y estética" />
+          <button id="startButton" class="cta" type="button">Agendar cita <span>→</span></button>
+          <div class="steps-mini">
+            <div><span class="mini-icon">▦</span><small>Agenda<br>en línea</small></div>
+            <div><span class="mini-icon">◷</span><small>Elige fecha<br>y hora</small></div>
+            <div><span class="mini-icon">✦</span><small>Confirma<br>tu cita</small></div>
+          </div>
+        </div>
       </section>
 
-      <section class="step-card">
-        <div class="step-title"><span>2</span><h2>Selecciona la fecha</h2></div>
-        <input id="dateInput" type="date" />
-        <p class="helper-text">No atendemos domingos.</p>
+      <section id="services" class="screen inner-screen" data-screen="services">
+        <div class="inner-wrap">
+          <img src="logo.png" class="mini-logo" alt="Studio Beauty" />
+          <h2>Selecciona un servicio</h2>
+          <div id="servicesList" class="services-list"></div>
+          <p id="servicesStatus" class="status">Cargando servicios...</p>
+        </div>
       </section>
 
-      <section class="step-card">
-        <div class="step-title"><span>3</span><h2>Escoge un horario</h2></div>
-        <div id="timesGrid" class="times-grid"></div>
-        <p id="timesStatus" class="helper-text">Primero selecciona un servicio y una fecha.</p>
-      </section>
-
-      <section class="step-card">
-        <div class="step-title"><span>4</span><h2>Tus datos</h2></div>
-        <form id="bookingForm" class="booking-form">
-          <label>
-            Nombre
-            <input id="nameInput" type="text" placeholder="Tu nombre" autocomplete="name" required />
-          </label>
-          <label>
-            WhatsApp
-            <input id="phoneInput" type="tel" placeholder="300 000 0000" inputmode="tel" required />
-          </label>
-
-          <div class="summary-box">
-            <strong>Resumen</strong>
-            <p id="summaryText">Aún no has seleccionado tu cita.</p>
+      <section id="datetime" class="screen inner-screen" data-screen="datetime">
+        <div class="inner-wrap">
+          <img src="logo.png" class="mini-logo" alt="Studio Beauty" />
+          <h2>Selecciona la fecha</h2>
+          <div class="calendar-card">
+            <div class="calendar-head">
+              <button id="prevMonth" type="button" aria-label="Mes anterior">‹</button>
+              <strong id="monthLabel"></strong>
+              <button id="nextMonth" type="button" aria-label="Mes siguiente">›</button>
+            </div>
+            <div class="weekdays"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
+            <div id="calendarGrid" class="calendar-grid"></div>
           </div>
 
-          <button id="bookButton" type="submit" disabled>Reservar cita</button>
-          <p id="formStatus" class="form-status" aria-live="polite"></p>
-        </form>
+          <h3>Selecciona la hora</h3>
+          <div id="timesGrid" class="times-grid"></div>
+          <p id="timesStatus" class="status">Elige primero una fecha.</p>
+          <button id="continueButton" class="cta full" type="button" disabled>Continuar <span>→</span></button>
+        </div>
       </section>
-    </section>
-  </main>
 
+      <section id="confirm" class="screen inner-screen" data-screen="confirm">
+        <div class="inner-wrap">
+          <img src="logo.png" class="mini-logo" alt="Studio Beauty" />
+          <h2>Confirma tu cita</h2>
+          <p class="subtitle">Revisa la información antes de agendar</p>
+
+          <div class="confirm-service">
+            <div id="summaryArt" class="service-art"></div>
+            <div><strong id="summaryService">Servicio</strong><span>Studio Beauty</span></div>
+          </div>
+
+          <div class="summary-details">
+            <div><span>▦</span><p><small>Fecha</small><strong id="summaryDate">—</strong></p></div>
+            <div><span>◷</span><p><small>Hora</small><strong id="summaryTime">—</strong></p></div>
+          </div>
+
+          <form id="bookingForm" class="form">
+            <label>Nombre completo<input id="nameInput" type="text" autocomplete="name" required></label>
+            <label>WhatsApp<input id="phoneInput" type="tel" inputmode="tel" autocomplete="tel" required></label>
+            <button id="bookButton" class="cta full" type="submit">Agendar cita</button>
+            <p id="formStatus" class="status"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="success" class="screen success-screen" data-screen="success">
+        <div class="success-box">
+          <div class="check">✓</div>
+          <img src="logo.png" alt="Studio Beauty" />
+          <h2>¡Cita agendada!</h2>
+          <p id="successText"></p>
+          <button id="newBookingButton" class="cta" type="button">Agendar otra cita</button>
+        </div>
+      </section>
+    </main>
+  </div>
   <script type="module" src="app.js"></script>
 </body>
 </html>
