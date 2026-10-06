@@ -1,0 +1,24 @@
+STUDIO BEAUTY - VERSIÓN CON FOTOS
+
+Sube a GitHub TODO el contenido de esta carpeta:
+- index.html
+- style.css
+- app.js
+- logo.png
+- inicio-agenda.png
+- carpeta img (completa)
+
+No subas solo los archivos sueltos: la carpeta img debe quedar en el repositorio.
+
+Las fotos ya están asignadas automáticamente a:
+- Manicure tradicional
+- Semipermanente manos
+- Soft Gel
+- Acrílicas esculpidas
+- Recubrimiento con Polygel
+- Recubrimiento con Builder Gel
+- Dipping en uñas naturales
+- Pedicure tradicional
+- Pedicure semipermanente
+
+No es necesario llenar imagen_url en Supabase para que estas fotos aparezcan.

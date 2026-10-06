@@ -5,6 +5,18 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_Esj-3c_n0bYl0QwHzIp7kg_jGuUS2j9
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
 
 const SLOT_STEP = 30
+const LOCAL_SERVICE_IMAGES = {
+  'Manicure tradicional': 'img/manicure-tradicional.jpg',
+  'Semipermanente manos': 'img/semipermanente-manos.jpg',
+  'Soft Gel': 'img/soft-gel.jpg',
+  'Acrílicas esculpidas': 'img/acrilicas-esculpidas.jpg',
+  'Recubrimiento con Polygel': 'img/recubrimiento-polygel.jpg',
+  'Recubrimiento con Builder Gel': 'img/builder-gel.jpg',
+  'Dipping en uñas naturales': 'img/dipping.jpg',
+  'Pedicure tradicional': 'img/pedicure-tradicional.jpg',
+  'Pedicure semipermanente': 'img/pedicure-semipermanente.jpg'
+}
+
 const state = {
   screen: 'home', services: [], hands: null, feet: null,
   date: '', startMinutes: null, month: startOfMonth(new Date()), availableDates: new Set()
@@ -53,7 +65,8 @@ async function loadServices(){
 }
 function serviceCard(s,category){
   const b=document.createElement('button'); b.type='button'; b.className='service-card'
-  const img=s.imagen_url?`<img class="service-photo" src="${escapeHtml(s.imagen_url)}" alt="${escapeHtml(s.nombre)}">`:`<div class="service-photo"></div>`
+  const imageSrc=s.imagen_url || LOCAL_SERVICE_IMAGES[s.nombre]
+  const img=imageSrc?`<img class="service-photo" src="${escapeHtml(imageSrc)}" alt="${escapeHtml(s.nombre)}" loading="lazy">`:`<div class="service-photo"></div>`
   b.innerHTML=`${img}<span class="service-copy"><strong>${escapeHtml(s.nombre)}</strong><span>${fmtMoney(s.precio)}</span></span><span class="service-tick">✓</span>`
   const refresh=()=>b.classList.toggle('selected',(category==='manos'?state.hands:state.feet)?.id===s.id)
   b.addEventListener('click',()=>{ if(category==='manos')state.hands=state.hands?.id===s.id?null:s; else state.feet=state.feet?.id===s.id?null:s; renderServices(); updateSelectionSummary() })
