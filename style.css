@@ -112,3 +112,41 @@
   opacity: 1;
   cursor: not-allowed;
 }
+/* BOTONES CONTINUAR */
+.cta.full {
+  width: 100%;
+  min-height: 56px;
+  border: none;
+  border-radius: 999px;
+  padding: 15px 24px;
+
+  background: linear-gradient(135deg, #d9919e, #c97887);
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+
+  box-shadow: 0 8px 20px rgba(198, 120, 135, 0.22);
+  transition: all 0.25s ease;
+}
+
+/* Cuando está disponible */
+.cta.full:not(:disabled) {
+  cursor: pointer;
+}
+
+/* Cuando todavía no se puede continuar */
+.cta.full:disabled {
+  background: linear-gradient(135deg, #f1e7e4, #eadbd7);
+  color: #a89791;
+  border: 1px solid #e6d4cf;
+  box-shadow: none;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Efecto al tocar */
+.cta.full:not(:disabled):active {
+  transform: scale(0.98);
+}
