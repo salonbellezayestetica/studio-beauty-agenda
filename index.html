@@ -3,83 +3,81 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#f8efe8" />
+  <meta name="theme-color" content="#fbf4ee" />
   <title>Studio Beauty | Agenda tu cita</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app">
-    <header class="nav" id="nav">
+    <header class="nav">
       <button id="backButton" class="nav-btn hidden" type="button" aria-label="Volver">‹</button>
       <div class="nav-spacer"></div>
       <button id="homeButton" class="nav-btn hidden" type="button" aria-label="Inicio">⌂</button>
     </header>
 
     <main>
-      <section id="home" class="screen active home-screen" data-screen="home">
-        <div class="home-ornament left"></div>
-        <div class="home-ornament right"></div>
-        <div class="floral floral-one"></div>
-        <div class="floral floral-two"></div>
-        <div class="home-inner">
-          <div class="hero-copy">
-            <h1>Resalta tu <em>belleza</em></h1>
-            <p>Agenda tu cita de manera<br>fácil y rápida</p>
-          </div>
-          <img src="logo.png" class="home-logo" alt="Studio Beauty - Salón de belleza y estética" />
-          <button id="startButton" class="cta" type="button">Agendar cita <span>→</span></button>
-          <div class="steps-mini">
-            <div><span class="mini-icon">▦</span><small>Agenda<br>en línea</small></div>
-            <div><span class="mini-icon">◷</span><small>Elige fecha<br>y hora</small></div>
-            <div><span class="mini-icon">✦</span><small>Confirma<br>tu cita</small></div>
-          </div>
+      <section class="screen active home-screen" data-screen="home">
+        <div class="home-visual">
+          <img src="inicio-agenda.png" class="home-cover" alt="Agenda tu cita en Studio Beauty" />
+          <button id="startButton" class="home-book-hotspot" type="button" aria-label="Agendar ahora"></button>
+          <button id="adminAccessButton" class="admin-link home-admin-link" type="button">Acceso estilista</button>
         </div>
       </section>
 
-      <section id="services" class="screen inner-screen" data-screen="services">
+      <section class="screen inner-screen" data-screen="services">
         <div class="inner-wrap">
           <img src="logo.png" class="mini-logo" alt="Studio Beauty" />
-          <h2>Selecciona un servicio</h2>
-          <div id="servicesList" class="services-list"></div>
-          <p id="servicesStatus" class="status">Cargando servicios...</p>
+          <p class="eyebrow">Tu cita</p>
+          <h2>¿Qué deseas hacerte?</h2>
+          <p class="subtitle">Puedes elegir un servicio de manos, uno de pies o ambos.</p>
+
+          <div class="category-heading"><span>Manos</span><small>Elige máximo uno</small></div>
+          <div id="handsList" class="services-list"></div>
+
+          <div class="category-heading feet-heading"><span>Pies</span><small>Opcional</small></div>
+          <div id="feetList" class="services-list"></div>
+
+          <div id="selectionSummary" class="selection-summary hidden-box"></div>
+          <p id="servicesStatus" class="status"></p>
+          <button id="servicesContinue" class="cta full" type="button" disabled>Continuar <span>→</span></button>
         </div>
       </section>
 
-      <section id="datetime" class="screen inner-screen" data-screen="datetime">
+      <section class="screen inner-screen" data-screen="datetime">
         <div class="inner-wrap">
           <img src="logo.png" class="mini-logo" alt="Studio Beauty" />
-          <h2>Selecciona la fecha</h2>
+          <p class="eyebrow">Agenda</p>
+          <h2>Elige fecha y hora</h2>
+          <p class="subtitle">Solo aparecen los días que la estilista ha habilitado.</p>
+
           <div class="calendar-card">
             <div class="calendar-head">
-              <button id="prevMonth" type="button" aria-label="Mes anterior">‹</button>
+              <button id="prevMonth" type="button">‹</button>
               <strong id="monthLabel"></strong>
-              <button id="nextMonth" type="button" aria-label="Mes siguiente">›</button>
+              <button id="nextMonth" type="button">›</button>
             </div>
             <div class="weekdays"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
             <div id="calendarGrid" class="calendar-grid"></div>
           </div>
 
-          <h3>Selecciona la hora</h3>
+          <h3 class="subheading">Selecciona la hora</h3>
           <div id="timesGrid" class="times-grid"></div>
-          <p id="timesStatus" class="status">Elige primero una fecha.</p>
-          <button id="continueButton" class="cta full" type="button" disabled>Continuar <span>→</span></button>
+          <p id="timesStatus" class="status">Elige una fecha disponible.</p>
+          <button id="datetimeContinue" class="cta full" type="button" disabled>Continuar <span>→</span></button>
         </div>
       </section>
 
-      <section id="confirm" class="screen inner-screen" data-screen="confirm">
+      <section class="screen inner-screen" data-screen="confirm">
         <div class="inner-wrap">
           <img src="logo.png" class="mini-logo" alt="Studio Beauty" />
+          <p class="eyebrow">Último paso</p>
           <h2>Confirma tu cita</h2>
-          <p class="subtitle">Revisa la información antes de agendar</p>
+          <p class="subtitle">Revisa la información antes de agendar.</p>
 
-          <div class="confirm-service">
-            <div id="summaryArt" class="service-art"></div>
-            <div><strong id="summaryService">Servicio</strong><span>Studio Beauty</span></div>
-          </div>
-
+          <div id="confirmServices" class="confirm-services"></div>
           <div class="summary-details">
             <div><span>▦</span><p><small>Fecha</small><strong id="summaryDate">—</strong></p></div>
             <div><span>◷</span><p><small>Hora</small><strong id="summaryTime">—</strong></p></div>
@@ -94,7 +92,73 @@
         </div>
       </section>
 
-      <section id="success" class="screen success-screen" data-screen="success">
+      <section class="screen inner-screen" data-screen="adminLogin">
+        <div class="inner-wrap admin-wrap">
+          <img src="logo.png" class="mini-logo" alt="Studio Beauty" />
+          <h2>Acceso estilista</h2>
+          <p class="subtitle">Ingresa con tu correo y contraseña.</p>
+          <form id="loginForm" class="form">
+            <label>Correo electrónico<input id="loginEmail" type="email" autocomplete="username" required></label>
+            <label>Contraseña<input id="loginPassword" type="password" autocomplete="current-password" required></label>
+            <button class="cta full" type="submit">Iniciar sesión</button>
+            <p id="loginStatus" class="status"></p>
+          </form>
+        </div>
+      </section>
+
+      <section class="screen inner-screen" data-screen="admin">
+        <div class="inner-wrap admin-wrap">
+          <div class="admin-top">
+            <img src="logo.png" class="mini-logo admin-logo" alt="Studio Beauty" />
+            <button id="logoutButton" class="logout-btn" type="button">Cerrar sesión</button>
+          </div>
+          <h2>Mi agenda</h2>
+          <p class="subtitle">Organiza la semana sin entrar a Supabase.</p>
+
+          <div class="admin-section accent-section">
+            <div class="section-heading">
+              <div><p class="eyebrow">Semana</p><h3>Disponibilidad</h3></div>
+              <button id="refreshAvailability" class="small-btn" type="button">Actualizar</button>
+            </div>
+            <p class="admin-help">Agrega los bloques en los que deseas recibir citas. Si un día no tiene disponibilidad, las clientas no podrán reservarlo.</p>
+            <form id="availabilityForm" class="compact-form">
+              <label>Fecha<input id="availabilityDate" type="date" required></label>
+              <div class="two-cols">
+                <label>Desde<input id="availabilityStart" type="time" required></label>
+                <label>Hasta<input id="availabilityEnd" type="time" required></label>
+              </div>
+              <button class="cta full" type="submit">Agregar disponibilidad</button>
+              <p id="availabilityStatus" class="status"></p>
+            </form>
+            <div id="availabilityList" class="admin-list"></div>
+          </div>
+
+          <div class="admin-section">
+            <div class="section-heading"><h3>Próximas citas</h3><button id="refreshAppointments" class="small-btn" type="button">Actualizar</button></div>
+            <div id="appointmentsList" class="admin-list"></div>
+            <p id="appointmentsStatus" class="status"></p>
+          </div>
+
+          <div class="admin-section">
+            <h3>Bloquear horario</h3>
+            <p class="admin-help">Úsalo para una cita personal, diligencia o cualquier excepción dentro de un horario que habías dejado disponible.</p>
+            <form id="blockForm" class="compact-form">
+              <label>Fecha<input id="blockDate" type="date" required></label>
+              <div class="two-cols">
+                <label>Desde<input id="blockStart" type="time" required></label>
+                <label>Hasta<input id="blockEnd" type="time" required></label>
+              </div>
+              <label>Motivo <span>(opcional)</span><input id="blockReason" type="text" maxlength="100" placeholder="Ej. diligencia personal"></label>
+              <button class="cta full" type="submit">Bloquear horario</button>
+              <p id="blockStatus" class="status"></p>
+            </form>
+            <div class="section-heading sub-list-heading"><h3>Bloqueos próximos</h3><button id="refreshBlocks" class="small-btn" type="button">Actualizar</button></div>
+            <div id="blocksList" class="admin-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen success-screen" data-screen="success">
         <div class="success-box">
           <div class="check">✓</div>
           <img src="logo.png" alt="Studio Beauty" />
