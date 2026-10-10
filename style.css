@@ -718,3 +718,29 @@ input[type="tel"]{
 [data-screen="services"] .inner-wrap{
   padding-top:calc(68px + env(safe-area-inset-top)) !important;
 }
+
+
+/* ===== V6: app instalable para la estilista ===== */
+.admin-quick-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:8px 0 6px;
+}
+.admin-quick-actions .small-btn{
+  width:100%;
+  min-height:46px;
+}
+.install-app-btn{
+  background:linear-gradient(135deg,#d9919e,#c97887) !important;
+  color:#fff !important;
+  border-color:transparent !important;
+}
+.app-install-hint{
+  margin:4px 2px 16px !important;
+}
+@media (max-width:420px){
+  .admin-quick-actions{
+    grid-template-columns:1fr;
+  }
+}

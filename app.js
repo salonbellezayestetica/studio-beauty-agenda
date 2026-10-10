@@ -33,7 +33,7 @@ const els = {
   availabilityForm: $('#availabilityForm'), availabilityDate: $('#availabilityDate'), availabilityEndDate: $('#availabilityEndDate'), availabilityStart: $('#availabilityStart'), availabilityEnd: $('#availabilityEnd'), availabilitySubmit: $('#availabilitySubmit'), availabilityStatus: $('#availabilityStatus'), availabilityList: $('#availabilityList'), refreshAvailability: $('#refreshAvailability'),
   appointmentsList: $('#appointmentsList'), appointmentsStatus: $('#appointmentsStatus'), refreshAppointments: $('#refreshAppointments'),
   blockForm: $('#blockForm'), blockDate: $('#blockDate'), blockStart: $('#blockStart'), blockEnd: $('#blockEnd'), blockReason: $('#blockReason'), blockStatus: $('#blockStatus'), blocksList: $('#blocksList'), refreshBlocks: $('#refreshBlocks'),
-  successText: $('#successText'), newBookingButton: $('#newBookingButton')
+  successText: $('#successText'), newBookingButton: $('#newBookingButton'), installAppButton: $('#installAppButton'), shareAgendaButton: $('#shareAgendaButton'), appInstallHint: $('#appInstallHint')
 }
 
 function showScreen(name){
@@ -349,10 +349,76 @@ els.availabilityDate.addEventListener('change',()=>{
   }
 })
 
+
+let deferredInstallPrompt=null
+
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault()
+  deferredInstallPrompt=e
+  els.installAppButton?.classList.remove('hidden')
+  if(els.appInstallHint) els.appInstallHint.textContent='Puedes instalar la agenda como una app en este celular.'
+})
+
+window.addEventListener('appinstalled',()=>{
+  deferredInstallPrompt=null
+  els.installAppButton?.classList.add('hidden')
+  if(els.appInstallHint) els.appInstallHint.textContent='La agenda ya quedó instalada en este dispositivo.'
+})
+
+async function installStylistApp(){
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt()
+    await deferredInstallPrompt.userChoice
+    deferredInstallPrompt=null
+    els.installAppButton?.classList.add('hidden')
+    return
+  }
+  alert('En Android: abre el menú del navegador y toca “Agregar a pantalla de inicio” o “Instalar aplicación”. En iPhone: toca Compartir y luego “Añadir a pantalla de inicio”.')
+}
+
+async function shareBookingLink(){
+  const bookingUrl=`${location.origin}${location.pathname}`
+  const shareData={
+    title:'Studio Beauty',
+    text:'Agenda tu cita en Studio Beauty',
+    url:bookingUrl
+  }
+  try{
+    if(navigator.share){
+      await navigator.share(shareData)
+    }else{
+      await navigator.clipboard.writeText(bookingUrl)
+      alert('Enlace de reservas copiado.')
+    }
+  }catch(e){
+    if(e?.name!=='AbortError') console.error(e)
+  }
+}
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').catch(console.error)
+  })
+}
+
 els.startButton.onclick=()=>showScreen('services');els.adminAccessButton.onclick=()=>showScreen('adminLogin');els.backButton.onclick=goBack;els.homeButton.onclick=()=>showScreen('home');els.newBookingButton.onclick=resetBooking
 els.servicesContinue.onclick=async()=>{state.date='';state.startMinutes=null;state.month=startOfMonth(new Date());await loadMonthAvailability();els.timesGrid.innerHTML='';els.timesStatus.textContent='Elige una fecha disponible.';els.datetimeContinue.disabled=true;showScreen('datetime')}
 els.prevMonth.onclick=async()=>{state.month=new Date(state.month.getFullYear(),state.month.getMonth()-1,1);await loadMonthAvailability()};els.nextMonth.onclick=async()=>{state.month=new Date(state.month.getFullYear(),state.month.getMonth()+1,1);await loadMonthAvailability()}
 els.datetimeContinue.onclick=()=>{renderConfirmation();showScreen('confirm')};els.bookingForm.onsubmit=saveBooking;els.loginForm.onsubmit=login;els.logoutButton.onclick=logout
-els.availabilityForm.onsubmit=addAvailability;els.refreshAvailability.onclick=loadAvailabilityAdmin;els.refreshAppointments.onclick=loadAppointments;els.blockForm.onsubmit=addBlock;els.refreshBlocks.onclick=loadBlocks
+els.availabilityForm.onsubmit=addAvailability;els.refreshAvailability.onclick=loadAvailabilityAdmin;els.refreshAppointments.onclick=loadAppointments;els.blockForm.onsubmit=addBlock;els.refreshBlocks.onclick=loadBlocks;els.installAppButton.onclick=installStylistApp;els.shareAgendaButton.onclick=shareBookingLink
 
-await loadServices();setAdminDateMins();const {data:{session}}=await supabase.auth.getSession();if(session&&location.hash==='#admin'){showScreen('admin');await loadAdminAll()}
+await loadServices()
+setAdminDateMins()
+const {data:{session}}=await supabase.auth.getSession()
+const wantsAdmin=new URLSearchParams(location.search).get('admin')==='1'||location.hash==='#admin'
+if(wantsAdmin){
+  if(session){
+    showScreen('admin')
+    await loadAdminAll()
+  }else{
+    showScreen('adminLogin')
+  }
+}else if(session&&location.hash==='#admin'){
+  showScreen('admin')
+  await loadAdminAll()
+}

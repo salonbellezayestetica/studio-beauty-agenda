@@ -1,17 +1,32 @@
-STUDIO BEAUTY - V5 LOGO + TÍTULO MEJORADOS
+STUDIO BEAUTY - V6 APP PARA ESTILISTA
 
-Cambios:
-- Logo interno reconstruido con fondo transparente.
-- Se eliminó el efecto de rectángulo/caja alrededor del logo.
-- Logo interno más pequeño y limpio.
-- Título “¿Qué deseas hacerte?” reducido y mejor proporcionado en celular.
-- Mejor espaciado entre logo, título y descripción.
-- Cache bust v5 para evitar que el navegador cargue versiones anteriores.
+Esta versión convierte la agenda en una PWA instalable.
 
-Conserva:
-- agenda semanal
-- modificar disponibilidad por día
-- cancelar citas
-- fotos
-- precios rosados
-- responsive celular/computador
+NUEVO:
+- La estilista puede instalar Studio Beauty en la pantalla de inicio.
+- El ícono abre directamente el acceso/panel de la estilista.
+- Botón “Instalar app” cuando el navegador lo permite.
+- Botón “Compartir agenda” para enviar el enlace de reservas por WhatsApp u otras apps.
+- Enlace público de clientas sigue siendo el mismo.
+- Manifest + Service Worker + iconos incluidos.
+
+IMPORTANTE:
+Sube TODOS los archivos del ZIP a la raíz del repositorio, incluidos:
+- manifest.webmanifest
+- sw.js
+- icon-192.png
+- icon-512.png
+
+Después de publicar:
+ANDROID / CHROME:
+1. Abre la agenda.
+2. Entra en Acceso estilista.
+3. Toca “Instalar app” si aparece.
+   Si no aparece: menú ⋮ > Agregar a pantalla de inicio / Instalar aplicación.
+
+IPHONE / SAFARI:
+1. Abre la agenda en Safari.
+2. Toca Compartir.
+3. Toca “Añadir a pantalla de inicio”.
+
+La app instalada abrirá con ?admin=1 para ir directamente al acceso de la estilista.
