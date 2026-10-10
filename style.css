@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
 :root{
   --cream:#fbf5ef;--cream2:#f5e9df;--white:#fffdfa;--ink:#261f1b;--muted:#7f746e;
   --rose:#d78f98;--rose2:#c87883;--gold:#be8a2f;--line:#eaded6;--card:#fffdfb;
@@ -372,5 +374,58 @@
 .service-copy span,
 .confirm-service span{
   color:var(--rose2);
+  font-weight:600;
+}
+
+
+/* ===== Tipografía profesional Studio Beauty ===== */
+body,
+button,
+input,
+select,
+textarea{
+  font-family:'Montserrat', Arial, sans-serif;
+}
+
+.inner-wrap h2,
+.subheading,
+.admin-section h3,
+.calendar-head strong,
+.category-heading span{
+  font-family:'Playfair Display', Georgia, serif;
+  font-weight:600;
+  letter-spacing:-0.01em;
+}
+
+.service-copy strong,
+.confirm-service strong,
+.summary-details strong,
+.admin-item strong{
+  font-family:'Montserrat', Arial, sans-serif;
+  font-weight:600;
+}
+
+.subtitle,
+.status,
+.category-heading small,
+.service-copy span,
+.weekdays span,
+.summary-details small,
+.confirm-service span,
+.admin-help,
+.admin-item p,
+.form label,
+.compact-form label{
+  font-family:'Montserrat', Arial, sans-serif;
+  letter-spacing:0;
+}
+
+.cta,
+.cta.full,
+.small-btn,
+.logout-btn,
+.danger-btn,
+.time-btn{
+  font-family:'Montserrat', Arial, sans-serif;
   font-weight:600;
 }

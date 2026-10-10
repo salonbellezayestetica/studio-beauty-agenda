@@ -24,3 +24,10 @@ Conserva:
 NUEVO AJUSTE:
 - Los precios vuelven a mostrarse en rosado como antes.
 - Pedicure semipermanente debe quedar en $35.000 en Supabase.
+
+
+NUEVO AJUSTE DE TIPOGRAFÍA:
+- Títulos: Playfair Display.
+- Textos, precios, botones y formularios: Montserrat.
+- Se conserva el logo original.
+- Se mantienen los precios rosados y el resto de funciones.
