@@ -1,32 +1,16 @@
-STUDIO BEAUTY - V6 APP PARA ESTILISTA
+STUDIO BEAUTY - V7 ICONO DE APP CORREGIDO
 
-Esta versión convierte la agenda en una PWA instalable.
-
-NUEVO:
-- La estilista puede instalar Studio Beauty en la pantalla de inicio.
-- El ícono abre directamente el acceso/panel de la estilista.
-- Botón “Instalar app” cuando el navegador lo permite.
-- Botón “Compartir agenda” para enviar el enlace de reservas por WhatsApp u otras apps.
-- Enlace público de clientas sigue siendo el mismo.
-- Manifest + Service Worker + iconos incluidos.
+Esta versión corrige el icono de la app instalada:
+- El logo de Studio Beauty ahora ocupa mucho más espacio dentro del icono.
+- Se añadió icono específico para iPhone/iPad.
+- Se añadió favicon para el navegador.
+- Se forzó una versión nueva para evitar que el celular siga usando el icono anterior.
 
 IMPORTANTE:
-Sube TODOS los archivos del ZIP a la raíz del repositorio, incluidos:
-- manifest.webmanifest
-- sw.js
-- icon-192.png
-- icon-512.png
+Después de subir esta versión:
+1. Espera 1-2 minutos.
+2. Elimina de la pantalla de inicio la app/atajo anterior.
+3. Abre de nuevo la agenda en Chrome o Safari.
+4. Vuelve a instalar/agregar a pantalla de inicio.
 
-Después de publicar:
-ANDROID / CHROME:
-1. Abre la agenda.
-2. Entra en Acceso estilista.
-3. Toca “Instalar app” si aparece.
-   Si no aparece: menú ⋮ > Agregar a pantalla de inicio / Instalar aplicación.
-
-IPHONE / SAFARI:
-1. Abre la agenda en Safari.
-2. Toca Compartir.
-3. Toca “Añadir a pantalla de inicio”.
-
-La app instalada abrirá con ?admin=1 para ir directamente al acceso de la estilista.
+Si no eliminas el acceso anterior, el celular puede conservar el icono viejo.

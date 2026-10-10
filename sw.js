@@ -1,13 +1,15 @@
-const CACHE_NAME = 'studio-beauty-v6';
+const CACHE_NAME = 'studio-beauty-v7';
 const APP_SHELL = [
   './',
   './index.html',
-  './style.css?v=6',
-  './app.js?v=6',
+  './style.css?v=7',
+  './app.js?v=7',
   './manifest.webmanifest',
   './logo-studio-beauty-clean.png?v=6',
   './icon-192.png',
   './icon-512.png',
+  './apple-touch-icon.png',
+  './favicon-64.png',
   './inicio-agenda.png',
   './manicure-tradicional.jpg',
   './semipermanente-manos.jpg',
