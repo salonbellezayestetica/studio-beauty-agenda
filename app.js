@@ -6,15 +6,15 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
 
 const SLOT_STEP = 30
 const LOCAL_SERVICE_IMAGES = {
-  'Manicure tradicional': 'img/manicure-tradicional.jpg',
-  'Semipermanente manos': 'img/semipermanente-manos.jpg',
-  'Soft Gel': 'img/soft-gel.jpg',
-  'Acrílicas esculpidas': 'img/acrilicas-esculpidas.jpg',
-  'Recubrimiento con Polygel': 'img/recubrimiento-polygel.jpg',
-  'Recubrimiento con Builder Gel': 'img/builder-gel.jpg',
-  'Dipping en uñas naturales': 'img/dipping.jpg',
-  'Pedicure tradicional': 'img/pedicure-tradicional.jpg',
-  'Pedicure semipermanente': 'img/pedicure-semipermanente.jpg'
+  'Manicure tradicional': 'manicure-tradicional.jpg',
+  'Semipermanente manos': 'semipermanente-manos.jpg',
+  'Soft Gel': 'soft-gel.jpg',
+  'Acrílicas esculpidas': 'acrilicas-esculpidas.jpg',
+  'Recubrimiento con Polygel': 'recubrimiento-polygel.jpg',
+  'Recubrimiento con Builder Gel': 'builder-gel.jpg',
+  'Dipping en uñas naturales': 'dipping.jpg',
+  'Pedicure tradicional': 'pedicure-tradicional.jpg',
+  'Pedicure semipermanente': 'pedicure-semipermanente.jpg'
 }
 
 const state = {
@@ -157,7 +157,41 @@ async function loadAppointments(){
   if(ids.length){const r=await supabase.from('cita_servicios').select('cita_id,servicio_id').in('cita_id',ids);links=r.data||[]}
   const map=new Map(state.services.map(s=>[s.id,s.nombre]));els.appointmentsStatus.textContent=''
   if(!(appointments||[]).length){els.appointmentsList.innerHTML='<div class="admin-item"><p>No hay citas próximas.</p></div>';return}
-  ;(appointments||[]).forEach(a=>{const names=links.filter(l=>l.cita_id===a.id).map(l=>map.get(l.servicio_id)).filter(Boolean);const item=document.createElement('div');item.className='admin-item';item.innerHTML=`<strong>${escapeHtml(a.nombre_cliente)}</strong><p>${escapeHtml(fmtDate(a.fecha))} · ${fmtTime(parseDbTime(a.hora_inicio))} – ${fmtTime(parseDbTime(a.hora_fin))}</p><p>${escapeHtml(names.join(' + ')||'Servicio')}</p><p>WhatsApp: ${escapeHtml(a.whatsapp)}</p>`;els.appointmentsList.appendChild(item)})
+  ;(appointments||[]).forEach(a=>{
+    const names=links.filter(l=>l.cita_id===a.id).map(l=>map.get(l.servicio_id)).filter(Boolean)
+    const item=document.createElement('div')
+    item.className='admin-item appointment-item'
+    item.innerHTML=`
+      <div class="appointment-main">
+        <strong>${escapeHtml(a.nombre_cliente)}</strong>
+        <p>${escapeHtml(fmtDate(a.fecha))} · ${fmtTime(parseDbTime(a.hora_inicio))} – ${fmtTime(parseDbTime(a.hora_fin))}</p>
+        <p>${escapeHtml(names.join(' + ')||'Servicio')}</p>
+        <p>WhatsApp: ${escapeHtml(a.whatsapp)}</p>
+      </div>
+      <div class="appointment-actions">
+        <button class="danger-btn cancel-appointment-btn" type="button">Cancelar cita</button>
+      </div>`
+    item.querySelector('.cancel-appointment-btn').onclick=async()=>{
+      const ok=window.confirm(`¿Cancelar la cita de ${a.nombre_cliente}? El horario volverá a quedar disponible.`)
+      if(!ok)return
+      const btn=item.querySelector('.cancel-appointment-btn')
+      btn.disabled=true
+      btn.textContent='Cancelando...'
+      const {error}=await supabase.from('Citas').update({estado:'cancelada'}).eq('id',a.id)
+      if(error){
+        console.error(error)
+        btn.disabled=false
+        btn.textContent='Cancelar cita'
+        els.appointmentsStatus.className='status error'
+        els.appointmentsStatus.textContent='No pudimos cancelar la cita.'
+        return
+      }
+      els.appointmentsStatus.className='status success'
+      els.appointmentsStatus.textContent='Cita cancelada. El horario quedó libre.'
+      await loadAppointments()
+    }
+    els.appointmentsList.appendChild(item)
+  })
 }
 async function loadBlocks(){
   els.blocksList.innerHTML='';const {data,error}=await supabase.from('bloqueos').select('*').gte('fecha',todayStr()).order('fecha').order('hora_inicio');if(error){return}

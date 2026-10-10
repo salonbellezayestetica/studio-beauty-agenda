@@ -1,24 +1,20 @@
-STUDIO BEAUTY - VERSIÓN CON FOTOS
+STUDIO BEAUTY - VERSIÓN CONSOLIDADA
 
-Sube a GitHub TODO el contenido de esta carpeta:
-- index.html
-- style.css
-- app.js
-- logo.png
-- inicio-agenda.png
-- carpeta img (completa)
+Incluye:
+- Portada responsive para computador y celular.
+- Letras un poco más grandes en agenda y panel de estilista.
+- 9 fotos reales de servicios funcionando desde archivos raíz.
+- Disponibilidad semanal y bloqueos.
+- Panel privado de estilista.
+- Botón "Cancelar cita" en cada cita próxima.
+- Al cancelar, estado pasa a "cancelada" y la cita deja de ocupar horario.
+- Confirmación antes de cancelar.
 
-No subas solo los archivos sueltos: la carpeta img debe quedar en el repositorio.
+AÚN PENDIENTE:
+- Definir tiempos finales por servicio.
+- Integración con Google Calendar.
+- Notificaciones automáticas.
 
-Las fotos ya están asignadas automáticamente a:
-- Manicure tradicional
-- Semipermanente manos
-- Soft Gel
-- Acrílicas esculpidas
-- Recubrimiento con Polygel
-- Recubrimiento con Builder Gel
-- Dipping en uñas naturales
-- Pedicure tradicional
-- Pedicure semipermanente
-
-No es necesario llenar imagen_url en Supabase para que estas fotos aparezcan.
+PARA PUBLICAR:
+Sube TODOS los archivos de esta carpeta a la raíz del repositorio en GitHub y reemplaza los anteriores.
+Luego Commit changes, espera 1-2 minutos y recarga la página.
