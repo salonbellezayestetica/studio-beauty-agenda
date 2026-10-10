@@ -289,3 +289,43 @@
     min-height:46px;
   }
 }
+
+
+/* Disponibilidad semanal por rango */
+.range-help{
+  margin:8px 2px 2px;
+  text-align:left;
+}
+@media (max-width:520px){
+  #availabilityForm .two-cols{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+}
+
+
+/* Texto secundario ligeramente más grande y legible */
+.subtitle,
+.status,
+.category-heading small,
+.service-copy span,
+.weekdays span,
+.summary-details small,
+.confirm-service span,
+.admin-help,
+.admin-item p,
+.form label,
+.compact-form label{
+  font-size:calc(1em + 1px);
+}
+
+.subtitle,
+.status,
+.service-copy span,
+.summary-details small,
+.confirm-service span,
+.admin-help,
+.admin-item p{
+  color:#756a66;
+  line-height:1.55;
+}

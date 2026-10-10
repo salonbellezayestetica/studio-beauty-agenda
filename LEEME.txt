@@ -1,20 +1,25 @@
-STUDIO BEAUTY - VERSIÓN CONSOLIDADA
+STUDIO BEAUTY - AGENDA SEMANAL
 
-Incluye:
-- Portada responsive para computador y celular.
-- Letras un poco más grandes en agenda y panel de estilista.
-- 9 fotos reales de servicios funcionando desde archivos raíz.
-- Disponibilidad semanal y bloqueos.
-- Panel privado de estilista.
-- Botón "Cancelar cita" en cada cita próxima.
-- Al cancelar, estado pasa a "cancelada" y la cita deja de ocupar horario.
-- Confirmación antes de cancelar.
+Esta versión incluye todo lo anterior y además:
 
-AÚN PENDIENTE:
-- Definir tiempos finales por servicio.
-- Integración con Google Calendar.
-- Notificaciones automáticas.
+- La estilista puede abrir disponibilidad desde una fecha hasta otra fecha.
+- El mismo rango horario se crea automáticamente para todos los días seleccionados.
+- Ejemplo: desde lunes 12 hasta domingo 18, de 8:00 a 17:00.
+- Puede seguir eliminando un día/bloque individual desde la lista.
+- Máximo 31 días por operación para evitar errores.
 
-PARA PUBLICAR:
-Sube TODOS los archivos de esta carpeta a la raíz del repositorio en GitHub y reemplaza los anteriores.
-Luego Commit changes, espera 1-2 minutos y recarga la página.
+También conserva:
+- Diseño responsive computador/celular.
+- Letras ampliadas.
+- Fotos reales.
+- Cancelar cita.
+- Disponibilidad, bloqueos y panel de estilista.
+
+Pendiente:
+- Tiempos finales por servicio.
+- Google Calendar y notificaciones.
+
+
+NUEVO AJUSTE:
+- Se aumentó ligeramente el tamaño de las letras grises/pequeñas.
+- No se modificaron de forma exagerada los títulos principales.

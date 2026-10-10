@@ -124,12 +124,16 @@
             </div>
             <p class="admin-help">Agrega los bloques en los que deseas recibir citas. Si un día no tiene disponibilidad, las clientas no podrán reservarlo.</p>
             <form id="availabilityForm" class="compact-form">
-              <label>Fecha<input id="availabilityDate" type="date" required></label>
               <div class="two-cols">
-                <label>Desde<input id="availabilityStart" type="time" required></label>
-                <label>Hasta<input id="availabilityEnd" type="time" required></label>
+                <label>Desde fecha<input id="availabilityDate" type="date" required></label>
+                <label>Hasta fecha<input id="availabilityEndDate" type="date" required></label>
+              </div>
+              <div class="two-cols">
+                <label>Hora desde<input id="availabilityStart" type="time" required></label>
+                <label>Hora hasta<input id="availabilityEnd" type="time" required></label>
               </div>
               <button class="cta full" type="submit">Agregar disponibilidad</button>
+              <p class="admin-help range-help">Se abrirá el mismo horario para todos los días del rango seleccionado.</p>
               <p id="availabilityStatus" class="status"></p>
             </form>
             <div id="availabilityList" class="admin-list"></div>

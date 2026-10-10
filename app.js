@@ -29,7 +29,7 @@ const els = {
   prevMonth: $('#prevMonth'), nextMonth: $('#nextMonth'), monthLabel: $('#monthLabel'), calendarGrid: $('#calendarGrid'), timesGrid: $('#timesGrid'), timesStatus: $('#timesStatus'), datetimeContinue: $('#datetimeContinue'),
   confirmServices: $('#confirmServices'), summaryDate: $('#summaryDate'), summaryTime: $('#summaryTime'), bookingForm: $('#bookingForm'), nameInput: $('#nameInput'), phoneInput: $('#phoneInput'), formStatus: $('#formStatus'),
   loginForm: $('#loginForm'), loginEmail: $('#loginEmail'), loginPassword: $('#loginPassword'), loginStatus: $('#loginStatus'), logoutButton: $('#logoutButton'),
-  availabilityForm: $('#availabilityForm'), availabilityDate: $('#availabilityDate'), availabilityStart: $('#availabilityStart'), availabilityEnd: $('#availabilityEnd'), availabilityStatus: $('#availabilityStatus'), availabilityList: $('#availabilityList'), refreshAvailability: $('#refreshAvailability'),
+  availabilityForm: $('#availabilityForm'), availabilityDate: $('#availabilityDate'), availabilityEndDate: $('#availabilityEndDate'), availabilityStart: $('#availabilityStart'), availabilityEnd: $('#availabilityEnd'), availabilityStatus: $('#availabilityStatus'), availabilityList: $('#availabilityList'), refreshAvailability: $('#refreshAvailability'),
   appointmentsList: $('#appointmentsList'), appointmentsStatus: $('#appointmentsStatus'), refreshAppointments: $('#refreshAppointments'),
   blockForm: $('#blockForm'), blockDate: $('#blockDate'), blockStart: $('#blockStart'), blockEnd: $('#blockEnd'), blockReason: $('#blockReason'), blockStatus: $('#blockStatus'), blocksList: $('#blocksList'), refreshBlocks: $('#refreshBlocks'),
   successText: $('#successText'), newBookingButton: $('#newBookingButton')
@@ -147,7 +147,62 @@ async function loadAvailabilityAdmin(){
   els.availabilityStatus.textContent=''; if(!(data||[]).length){els.availabilityList.innerHTML='<div class="admin-item"><p>No hay horarios abiertos próximamente.</p></div>';return}
   ;(data||[]).forEach(r=>{const item=document.createElement('div');item.className='admin-item';item.innerHTML=`<div class="admin-item-top"><div><strong>${escapeHtml(fmtDate(r.fecha))}</strong><p>${fmtTime(parseDbTime(r.hora_inicio))} – ${fmtTime(parseDbTime(r.hora_fin))}</p></div><button class="danger-btn" type="button">Eliminar</button></div>`;item.querySelector('button').onclick=async()=>{await supabase.from('disponibilidad').delete().eq('id',r.id);await loadAvailabilityAdmin()};els.availabilityList.appendChild(item)})
 }
-async function addAvailability(e){e.preventDefault();els.availabilityStatus.textContent='Guardando...';if(els.availabilityEnd.value<=els.availabilityStart.value){els.availabilityStatus.className='status error';els.availabilityStatus.textContent='La hora final debe ser posterior a la inicial.';return}const {error}=await supabase.from('disponibilidad').insert({fecha:els.availabilityDate.value,hora_inicio:els.availabilityStart.value,hora_fin:els.availabilityEnd.value,activo:true});if(error){console.error(error);els.availabilityStatus.className='status error';els.availabilityStatus.textContent='No pudimos guardar la disponibilidad.';return}els.availabilityStatus.className='status success';els.availabilityStatus.textContent='Disponibilidad agregada.';els.availabilityForm.reset();setAdminDateMins();await loadAvailabilityAdmin()}
+function dateRangeInclusive(startStr,endStr){
+  const dates=[]
+  const start=new Date(startStr+'T12:00:00')
+  const end=new Date(endStr+'T12:00:00')
+  if(Number.isNaN(start.getTime())||Number.isNaN(end.getTime())||end<start)return dates
+  const cursor=new Date(start)
+  while(cursor<=end){
+    dates.push(`${cursor.getFullYear()}-${String(cursor.getMonth()+1).padStart(2,'0')}-${String(cursor.getDate()).padStart(2,'0')}`)
+    cursor.setDate(cursor.getDate()+1)
+  }
+  return dates
+}
+async function addAvailability(e){
+  e.preventDefault()
+  els.availabilityStatus.textContent='Guardando...'
+  els.availabilityStatus.className='status'
+  if(!els.availabilityDate.value||!els.availabilityEndDate.value){
+    els.availabilityStatus.className='status error'
+    els.availabilityStatus.textContent='Selecciona la fecha inicial y la fecha final.'
+    return
+  }
+  if(els.availabilityEndDate.value<els.availabilityDate.value){
+    els.availabilityStatus.className='status error'
+    els.availabilityStatus.textContent='La fecha final no puede ser anterior a la inicial.'
+    return
+  }
+  if(els.availabilityEnd.value<=els.availabilityStart.value){
+    els.availabilityStatus.className='status error'
+    els.availabilityStatus.textContent='La hora final debe ser posterior a la inicial.'
+    return
+  }
+  const dates=dateRangeInclusive(els.availabilityDate.value,els.availabilityEndDate.value)
+  if(dates.length>31){
+    els.availabilityStatus.className='status error'
+    els.availabilityStatus.textContent='Por seguridad, agrega máximo 31 días a la vez.'
+    return
+  }
+  const rows=dates.map(fecha=>({
+    fecha,
+    hora_inicio:els.availabilityStart.value,
+    hora_fin:els.availabilityEnd.value,
+    activo:true
+  }))
+  const {error}=await supabase.from('disponibilidad').insert(rows)
+  if(error){
+    console.error(error)
+    els.availabilityStatus.className='status error'
+    els.availabilityStatus.textContent='No pudimos guardar la disponibilidad.'
+    return
+  }
+  els.availabilityStatus.className='status success'
+  els.availabilityStatus.textContent=`Disponibilidad agregada para ${dates.length} día${dates.length===1?'':'s'}.`
+  els.availabilityForm.reset()
+  setAdminDateMins()
+  await loadAvailabilityAdmin()
+}
 
 async function loadAppointments(){
   els.appointmentsList.innerHTML='';els.appointmentsStatus.textContent='Cargando...'
@@ -199,7 +254,18 @@ async function loadBlocks(){
   ;(data||[]).forEach(r=>{const item=document.createElement('div');item.className='admin-item';item.innerHTML=`<div class="admin-item-top"><div><strong>${escapeHtml(fmtDate(r.fecha))}</strong><p>${fmtTime(parseDbTime(r.hora_inicio))} – ${fmtTime(parseDbTime(r.hora_fin))}${r.motivo?` · ${escapeHtml(r.motivo)}`:''}</p></div><button class="danger-btn" type="button">Eliminar</button></div>`;item.querySelector('button').onclick=async()=>{await supabase.from('bloqueos').delete().eq('id',r.id);await loadBlocks()};els.blocksList.appendChild(item)})
 }
 async function addBlock(e){e.preventDefault();if(els.blockEnd.value<=els.blockStart.value){els.blockStatus.className='status error';els.blockStatus.textContent='La hora final debe ser posterior a la inicial.';return}els.blockStatus.textContent='Guardando...';const {error}=await supabase.from('bloqueos').insert({fecha:els.blockDate.value,hora_inicio:els.blockStart.value,hora_fin:els.blockEnd.value,motivo:els.blockReason.value.trim()||null});if(error){console.error(error);els.blockStatus.className='status error';els.blockStatus.textContent='No pudimos crear el bloqueo.';return}els.blockStatus.className='status success';els.blockStatus.textContent='Horario bloqueado.';els.blockForm.reset();setAdminDateMins();await loadBlocks()}
-function setAdminDateMins(){const t=todayStr();els.availabilityDate.min=t;els.blockDate.min=t}
+function setAdminDateMins(){
+  const t=todayStr()
+  els.availabilityDate.min=t
+  els.availabilityEndDate.min=t
+  els.blockDate.min=t
+}
+els.availabilityDate.addEventListener('change',()=>{
+  els.availabilityEndDate.min=els.availabilityDate.value||todayStr()
+  if(!els.availabilityEndDate.value||els.availabilityEndDate.value<els.availabilityDate.value){
+    els.availabilityEndDate.value=els.availabilityDate.value
+  }
+})
 
 els.startButton.onclick=()=>showScreen('services');els.adminAccessButton.onclick=()=>showScreen('adminLogin');els.backButton.onclick=goBack;els.homeButton.onclick=()=>showScreen('home');els.newBookingButton.onclick=resetBooking
 els.servicesContinue.onclick=async()=>{state.date='';state.startMinutes=null;state.month=startOfMonth(new Date());await loadMonthAvailability();els.timesGrid.innerHTML='';els.timesStatus.textContent='Elige una fecha disponible.';els.datetimeContinue.disabled=true;showScreen('datetime')}
