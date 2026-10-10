@@ -1,25 +1,26 @@
-STUDIO BEAUTY - AGENDA SEMANAL
+STUDIO BEAUTY - LOGO + MODIFICAR DÍA
 
-Esta versión incluye todo lo anterior y además:
+Incluye todo lo anterior y además:
 
-- La estilista puede abrir disponibilidad desde una fecha hasta otra fecha.
-- El mismo rango horario se crea automáticamente para todos los días seleccionados.
-- Ejemplo: desde lunes 12 hasta domingo 18, de 8:00 a 17:00.
-- Puede seguir eliminando un día/bloque individual desde la lista.
-- Máximo 31 días por operación para evitar errores.
+1. Logo más visible dentro de la agenda y del acceso/panel de la estilista.
+2. La estilista puede abrir toda la semana con un mismo horario.
+3. Luego puede modificar un día específico sin afectar los demás.
+   Ejemplo:
+   - Semana: 8:00 a. m. a 5:00 p. m.
+   - Martes: pulsa "Modificar"
+   - Cambia a 9:00 a. m. a 5:00 p. m.
+   - Pulsa "Guardar cambio"
+4. También puede eliminar un día específico si no trabajará.
 
-También conserva:
-- Diseño responsive computador/celular.
-- Letras ampliadas.
-- Fotos reales.
-- Cancelar cita.
-- Disponibilidad, bloqueos y panel de estilista.
-
-Pendiente:
-- Tiempos finales por servicio.
-- Google Calendar y notificaciones.
+Conserva:
+- Responsive computador/celular
+- Letras más legibles
+- Fotos reales
+- Cancelar citas
+- Bloqueos
+- Agenda semanal
 
 
 NUEVO AJUSTE:
-- Se aumentó ligeramente el tamaño de las letras grises/pequeñas.
-- No se modificaron de forma exagerada los títulos principales.
+- Los precios vuelven a mostrarse en rosado como antes.
+- Pedicure semipermanente debe quedar en $35.000 en Supabase.

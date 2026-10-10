@@ -329,3 +329,48 @@
   color:#756a66;
   line-height:1.55;
 }
+
+
+/* Logo más visible dentro de la agenda */
+.inner-screen .mini-logo{
+  width:112px;
+  max-width:34vw;
+  height:auto;
+  display:block;
+  margin:2px auto 18px;
+}
+.admin-top .admin-logo{
+  width:104px;
+  max-width:30vw;
+  margin:0;
+}
+
+/* Acciones para modificar un solo día de disponibilidad */
+.availability-actions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.availability-actions .small-btn,
+.availability-actions .danger-btn{
+  min-height:40px;
+}
+@media (max-width:520px){
+  .availability-actions{
+    width:100%;
+    margin-top:10px;
+  }
+  .availability-actions .small-btn,
+  .availability-actions .danger-btn{
+    flex:1;
+  }
+}
+
+
+/* Restaurar precios en rosado */
+.service-copy span,
+.confirm-service span{
+  color:var(--rose2);
+  font-weight:600;
+}

@@ -1,3 +1,4 @@
+let editingAvailabilityId=null
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
 const SUPABASE_URL = 'https://ywbmlsfxvytdmnkyjial.supabase.co'
@@ -29,7 +30,7 @@ const els = {
   prevMonth: $('#prevMonth'), nextMonth: $('#nextMonth'), monthLabel: $('#monthLabel'), calendarGrid: $('#calendarGrid'), timesGrid: $('#timesGrid'), timesStatus: $('#timesStatus'), datetimeContinue: $('#datetimeContinue'),
   confirmServices: $('#confirmServices'), summaryDate: $('#summaryDate'), summaryTime: $('#summaryTime'), bookingForm: $('#bookingForm'), nameInput: $('#nameInput'), phoneInput: $('#phoneInput'), formStatus: $('#formStatus'),
   loginForm: $('#loginForm'), loginEmail: $('#loginEmail'), loginPassword: $('#loginPassword'), loginStatus: $('#loginStatus'), logoutButton: $('#logoutButton'),
-  availabilityForm: $('#availabilityForm'), availabilityDate: $('#availabilityDate'), availabilityEndDate: $('#availabilityEndDate'), availabilityStart: $('#availabilityStart'), availabilityEnd: $('#availabilityEnd'), availabilityStatus: $('#availabilityStatus'), availabilityList: $('#availabilityList'), refreshAvailability: $('#refreshAvailability'),
+  availabilityForm: $('#availabilityForm'), availabilityDate: $('#availabilityDate'), availabilityEndDate: $('#availabilityEndDate'), availabilityStart: $('#availabilityStart'), availabilityEnd: $('#availabilityEnd'), availabilitySubmit: $('#availabilitySubmit'), availabilityStatus: $('#availabilityStatus'), availabilityList: $('#availabilityList'), refreshAvailability: $('#refreshAvailability'),
   appointmentsList: $('#appointmentsList'), appointmentsStatus: $('#appointmentsStatus'), refreshAppointments: $('#refreshAppointments'),
   blockForm: $('#blockForm'), blockDate: $('#blockDate'), blockStart: $('#blockStart'), blockEnd: $('#blockEnd'), blockReason: $('#blockReason'), blockStatus: $('#blockStatus'), blocksList: $('#blocksList'), refreshBlocks: $('#refreshBlocks'),
   successText: $('#successText'), newBookingButton: $('#newBookingButton')
@@ -142,10 +143,61 @@ async function logout(){await supabase.auth.signOut();showScreen('home')}
 async function loadAdminAll(){await Promise.all([loadAvailabilityAdmin(),loadAppointments(),loadBlocks()])}
 
 async function loadAvailabilityAdmin(){
-  els.availabilityList.innerHTML='';const {data,error}=await supabase.from('disponibilidad').select('*').gte('fecha',todayStr()).order('fecha').order('hora_inicio')
-  if(error){els.availabilityStatus.className='status error';els.availabilityStatus.textContent='No pudimos cargar la disponibilidad.';return}
-  els.availabilityStatus.textContent=''; if(!(data||[]).length){els.availabilityList.innerHTML='<div class="admin-item"><p>No hay horarios abiertos próximamente.</p></div>';return}
-  ;(data||[]).forEach(r=>{const item=document.createElement('div');item.className='admin-item';item.innerHTML=`<div class="admin-item-top"><div><strong>${escapeHtml(fmtDate(r.fecha))}</strong><p>${fmtTime(parseDbTime(r.hora_inicio))} – ${fmtTime(parseDbTime(r.hora_fin))}</p></div><button class="danger-btn" type="button">Eliminar</button></div>`;item.querySelector('button').onclick=async()=>{await supabase.from('disponibilidad').delete().eq('id',r.id);await loadAvailabilityAdmin()};els.availabilityList.appendChild(item)})
+  els.availabilityList.innerHTML=''
+  const {data,error}=await supabase.from('disponibilidad').select('*').gte('fecha',todayStr()).order('fecha').order('hora_inicio')
+  if(error){
+    els.availabilityStatus.className='status error'
+    els.availabilityStatus.textContent='No pudimos cargar la disponibilidad.'
+    return
+  }
+  els.availabilityStatus.textContent=''
+  if(!(data||[]).length){
+    els.availabilityList.innerHTML='<div class="admin-item"><p>No hay horarios abiertos próximamente.</p></div>'
+    return
+  }
+
+  ;(data||[]).forEach(r=>{
+    const item=document.createElement('div')
+    item.className='admin-item'
+    item.innerHTML=`
+      <div class="admin-item-top">
+        <div>
+          <strong>${escapeHtml(fmtDate(r.fecha))}</strong>
+          <p>${fmtTime(parseDbTime(r.hora_inicio))} – ${fmtTime(parseDbTime(r.hora_fin))}</p>
+        </div>
+        <div class="availability-actions">
+          <button class="small-btn edit-availability-btn" type="button">Modificar</button>
+          <button class="danger-btn delete-availability-btn" type="button">Eliminar</button>
+        </div>
+      </div>`
+
+    item.querySelector('.edit-availability-btn').onclick=()=>{
+      editingAvailabilityId=r.id
+      els.availabilityDate.value=r.fecha
+      els.availabilityEndDate.value=r.fecha
+      els.availabilityEndDate.min=r.fecha
+      els.availabilityStart.value=String(r.hora_inicio).slice(0,5)
+      els.availabilityEnd.value=String(r.hora_fin).slice(0,5)
+      els.availabilitySubmit.textContent='Guardar cambio'
+      els.availabilityStatus.className='status'
+      els.availabilityStatus.textContent='Estás modificando solo este día.'
+      els.availabilityForm.scrollIntoView({behavior:'smooth',block:'center'})
+    }
+
+    item.querySelector('.delete-availability-btn').onclick=async()=>{
+      const ok=window.confirm(`¿Eliminar la disponibilidad del ${fmtDate(r.fecha)}?`)
+      if(!ok)return
+      await supabase.from('disponibilidad').delete().eq('id',r.id)
+      if(editingAvailabilityId===r.id){
+        editingAvailabilityId=null
+        els.availabilityForm.reset()
+        setAdminDateMins()
+        els.availabilitySubmit.textContent='Agregar disponibilidad'
+      }
+      await loadAvailabilityAdmin()
+    }
+    els.availabilityList.appendChild(item)
+  })
 }
 function dateRangeInclusive(startStr,endStr){
   const dates=[]
@@ -163,6 +215,7 @@ async function addAvailability(e){
   e.preventDefault()
   els.availabilityStatus.textContent='Guardando...'
   els.availabilityStatus.className='status'
+
   if(!els.availabilityDate.value||!els.availabilityEndDate.value){
     els.availabilityStatus.className='status error'
     els.availabilityStatus.textContent='Selecciona la fecha inicial y la fecha final.'
@@ -178,18 +231,47 @@ async function addAvailability(e){
     els.availabilityStatus.textContent='La hora final debe ser posterior a la inicial.'
     return
   }
+
+  // Si está editando, cambia únicamente el bloque seleccionado.
+  if(editingAvailabilityId!==null){
+    const {error}=await supabase.from('disponibilidad').update({
+      fecha:els.availabilityDate.value,
+      hora_inicio:els.availabilityStart.value,
+      hora_fin:els.availabilityEnd.value,
+      activo:true
+    }).eq('id',editingAvailabilityId)
+
+    if(error){
+      console.error(error)
+      els.availabilityStatus.className='status error'
+      els.availabilityStatus.textContent='No pudimos modificar ese día.'
+      return
+    }
+
+    editingAvailabilityId=null
+    els.availabilityStatus.className='status success'
+    els.availabilityStatus.textContent='Horario del día modificado correctamente.'
+    els.availabilityForm.reset()
+    setAdminDateMins()
+    els.availabilitySubmit.textContent='Agregar disponibilidad'
+    await loadAvailabilityAdmin()
+    return
+  }
+
   const dates=dateRangeInclusive(els.availabilityDate.value,els.availabilityEndDate.value)
   if(dates.length>31){
     els.availabilityStatus.className='status error'
     els.availabilityStatus.textContent='Por seguridad, agrega máximo 31 días a la vez.'
     return
   }
+
   const rows=dates.map(fecha=>({
     fecha,
     hora_inicio:els.availabilityStart.value,
     hora_fin:els.availabilityEnd.value,
     activo:true
   }))
+
   const {error}=await supabase.from('disponibilidad').insert(rows)
   if(error){
     console.error(error)
@@ -197,13 +279,13 @@ async function addAvailability(e){
     els.availabilityStatus.textContent='No pudimos guardar la disponibilidad.'
     return
   }
+
   els.availabilityStatus.className='status success'
   els.availabilityStatus.textContent=`Disponibilidad agregada para ${dates.length} día${dates.length===1?'':'s'}.`
   els.availabilityForm.reset()
   setAdminDateMins()
   await loadAvailabilityAdmin()
 }
-
 async function loadAppointments(){
   els.appointmentsList.innerHTML='';els.appointmentsStatus.textContent='Cargando...'
   const {data:appointments,error}=await supabase.from('Citas').select('id,nombre_cliente,whatsapp,fecha,hora_inicio,hora_fin,estado').gte('fecha',todayStr()).neq('estado','cancelada').order('fecha').order('hora_inicio')
