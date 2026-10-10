@@ -1,19 +1,17 @@
-STUDIO BEAUTY - V4 CORREGIDA
+STUDIO BEAUTY - V5 LOGO + TÍTULO MEJORADOS
 
-CAMBIOS:
-- Tipografía realmente nueva:
-  * Títulos: DM Serif Display
-  * Textos: Manrope
-- Se agregó versión ?v=4 al CSS/JS para evitar que el navegador siga mostrando archivos antiguos.
-- El logo interno usa un nombre nuevo: logo-studio-beauty.png, evitando que el celular cargue el logo viejo en caché.
-- El logo usado adentro corresponde al mismo diseño que aparece en la portada.
-- Panel de estilista corregido en celular:
-  * campos de fecha/hora ya no se aprietan en dos columnas en pantallas pequeñas
-  * tarjetas de disponibilidad se apilan correctamente
-  * botones Modificar/Eliminar caben completos
-  * más espacio inferior para que las listas no queden tapadas por la barra del navegador
+Cambios:
+- Logo interno reconstruido con fondo transparente.
+- Se eliminó el efecto de rectángulo/caja alrededor del logo.
+- Logo interno más pequeño y limpio.
+- Título “¿Qué deseas hacerte?” reducido y mejor proporcionado en celular.
+- Mejor espaciado entre logo, título y descripción.
+- Cache bust v5 para evitar que el navegador cargue versiones anteriores.
 
-PARA SUBIR:
-Sube TODOS los archivos de esta carpeta a GitHub y reemplaza los anteriores.
-Es importante subir también logo-studio-beauty.png.
-Después de Commit changes, espera 1-2 minutos y recarga.
+Conserva:
+- agenda semanal
+- modificar disponibilidad por día
+- cancelar citas
+- fotos
+- precios rosados
+- responsive celular/computador

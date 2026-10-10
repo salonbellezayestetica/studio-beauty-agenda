@@ -649,3 +649,72 @@ input[type="tel"]{
     padding-right:12px !important;
   }
 }
+
+
+/* ===== V5: título más elegante + logo limpio ===== */
+
+/* Logo sin marco ni caja visual */
+.inner-screen .mini-logo,
+.admin-top .admin-logo{
+  width:118px !important;
+  max-width:38vw !important;
+  height:auto !important;
+  object-fit:contain !important;
+  display:block !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  padding:0 !important;
+  filter:none !important;
+}
+
+.inner-screen .mini-logo{
+  margin:2px auto 14px !important;
+}
+
+.admin-top .admin-logo{
+  margin:0 !important;
+}
+
+/* Encabezado principal del selector de servicios:
+   más fino, menos grande y con mejor respiración */
+[data-screen="services"] .eyebrow{
+  margin:0 0 5px !important;
+  font-size:.64rem !important;
+  letter-spacing:.16em !important;
+}
+
+[data-screen="services"] h2{
+  font-family:'DM Serif Display', Georgia, serif !important;
+  font-size:clamp(1.72rem, 6vw, 2.05rem) !important;
+  line-height:1.06 !important;
+  font-weight:400 !important;
+  letter-spacing:-.012em !important;
+  margin:0 0 8px !important;
+  max-width:100% !important;
+}
+
+[data-screen="services"] .subtitle{
+  margin:0 0 20px !important;
+  font-size:.90rem !important;
+  line-height:1.55 !important;
+  max-width:31rem !important;
+}
+
+/* En teléfonos muy angostos, evitar que el título domine la pantalla */
+@media (max-width:340px){
+  [data-screen="services"] h2{
+    font-size:1.58rem !important;
+    line-height:1.08 !important;
+  }
+
+  .inner-screen .mini-logo{
+    width:104px !important;
+    margin-bottom:12px !important;
+  }
+}
+
+/* Un poco más de espacio arriba para que logo + título se vean intencionales */
+[data-screen="services"] .inner-wrap{
+  padding-top:calc(68px + env(safe-area-inset-top)) !important;
+}
