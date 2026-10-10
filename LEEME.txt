@@ -1,19 +1,19 @@
-STUDIO BEAUTY - LOGO CORRECTO + TIPOGRAFÍA NUEVA
+STUDIO BEAUTY - V4 CORREGIDA
 
-Esta versión corrige dos cosas:
+CAMBIOS:
+- Tipografía realmente nueva:
+  * Títulos: DM Serif Display
+  * Textos: Manrope
+- Se agregó versión ?v=4 al CSS/JS para evitar que el navegador siga mostrando archivos antiguos.
+- El logo interno usa un nombre nuevo: logo-studio-beauty.png, evitando que el celular cargue el logo viejo en caché.
+- El logo usado adentro corresponde al mismo diseño que aparece en la portada.
+- Panel de estilista corregido en celular:
+  * campos de fecha/hora ya no se aprietan en dos columnas en pantallas pequeñas
+  * tarjetas de disponibilidad se apilan correctamente
+  * botones Modificar/Eliminar caben completos
+  * más espacio inferior para que las listas no queden tapadas por la barra del navegador
 
-1. El logo que aparece dentro de la agenda y en el panel de la estilista
-   ahora se extrajo directamente de la portada, para que sea el mismo diseño.
-
-2. La tipografía ahora cambia de forma más visible:
-   - Títulos: Cormorant Garamond
-   - Textos, botones, servicios, precios y formularios: Poppins
-
-También conserva:
-- precios rosados
-- agenda semanal
-- modificación de un día específico
-- fotos
-- cancelar citas
-- responsive computador/celular
-- letras secundarias más legibles
+PARA SUBIR:
+Sube TODOS los archivos de esta carpeta a GitHub y reemplaza los anteriores.
+Es importante subir también logo-studio-beauty.png.
+Después de Commit changes, espera 1-2 minutos y recarga.
