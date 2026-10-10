@@ -1,33 +1,19 @@
-STUDIO BEAUTY - LOGO + MODIFICAR DÍA
+STUDIO BEAUTY - LOGO CORRECTO + TIPOGRAFÍA NUEVA
 
-Incluye todo lo anterior y además:
+Esta versión corrige dos cosas:
 
-1. Logo más visible dentro de la agenda y del acceso/panel de la estilista.
-2. La estilista puede abrir toda la semana con un mismo horario.
-3. Luego puede modificar un día específico sin afectar los demás.
-   Ejemplo:
-   - Semana: 8:00 a. m. a 5:00 p. m.
-   - Martes: pulsa "Modificar"
-   - Cambia a 9:00 a. m. a 5:00 p. m.
-   - Pulsa "Guardar cambio"
-4. También puede eliminar un día específico si no trabajará.
+1. El logo que aparece dentro de la agenda y en el panel de la estilista
+   ahora se extrajo directamente de la portada, para que sea el mismo diseño.
 
-Conserva:
-- Responsive computador/celular
-- Letras más legibles
-- Fotos reales
-- Cancelar citas
-- Bloqueos
-- Agenda semanal
+2. La tipografía ahora cambia de forma más visible:
+   - Títulos: Cormorant Garamond
+   - Textos, botones, servicios, precios y formularios: Poppins
 
-
-NUEVO AJUSTE:
-- Los precios vuelven a mostrarse en rosado como antes.
-- Pedicure semipermanente debe quedar en $35.000 en Supabase.
-
-
-NUEVO AJUSTE DE TIPOGRAFÍA:
-- Títulos: Playfair Display.
-- Textos, precios, botones y formularios: Montserrat.
-- Se conserva el logo original.
-- Se mantienen los precios rosados y el resto de funciones.
+También conserva:
+- precios rosados
+- agenda semanal
+- modificación de un día específico
+- fotos
+- cancelar citas
+- responsive computador/celular
+- letras secundarias más legibles

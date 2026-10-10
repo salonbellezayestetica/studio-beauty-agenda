@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
 
 :root{
   --cream:#fbf5ef;--cream2:#f5e9df;--white:#fffdfa;--ink:#261f1b;--muted:#7f746e;
@@ -428,4 +429,60 @@ textarea{
 .time-btn{
   font-family:'Montserrat', Arial, sans-serif;
   font-weight:600;
+}
+
+/* ===== Tipografía profesional más visible ===== */
+body,
+button,
+input,
+select,
+textarea,
+.service-copy strong,
+.service-copy span,
+.confirm-service strong,
+.confirm-service span,
+.summary-details strong,
+.summary-details small,
+.admin-item strong,
+.admin-item p,
+.form label,
+.compact-form label,
+.subtitle,
+.status,
+.admin-help,
+.weekdays span{
+  font-family:'Poppins', Arial, sans-serif !important;
+}
+
+.inner-wrap h2,
+.subheading,
+.admin-section h3,
+.calendar-head strong,
+.category-heading span{
+  font-family:'Cormorant Garamond', Georgia, serif !important;
+  font-weight:600 !important;
+  letter-spacing:-0.015em;
+}
+
+/* Logo de portada reutilizado dentro de la agenda */
+.inner-screen .mini-logo,
+.admin-top .admin-logo{
+  width:150px !important;
+  max-width:42vw !important;
+  height:auto !important;
+  object-fit:contain;
+  display:block;
+}
+.inner-screen .mini-logo{
+  margin:0 auto 18px !important;
+}
+.admin-top .admin-logo{
+  margin:0 !important;
+}
+
+/* Mantener precios rosados */
+.service-copy span,
+.confirm-service span{
+  color:var(--rose2) !important;
+  font-weight:600 !important;
 }
