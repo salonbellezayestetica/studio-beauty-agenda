@@ -342,7 +342,28 @@ function ensureCalendarButton(){
       alert('No encontramos los datos de la cita. Agenda nuevamente para agregarla al calendario.');
       return;
     }
+
     const servicios=(b.servicios||[]).join(' + ')||'Servicio de belleza';
+    const title='Cita Studio Beauty - '+servicios;
+    const details='Estilista: '+b.estilista+' | '+servicios;
+    const start=icsLocal(b.fecha,b.hora_inicio);
+    const end=icsLocal(b.fecha,b.hora_fin);
+
+    const ua=navigator.userAgent||'';
+    const isIOS=/iPhone|iPad|iPod/i.test(ua);
+    const isAndroid=/Android/i.test(ua);
+
+    if(isAndroid){
+      const gStart=start.replace(/[-:]/g,'');
+      const gEnd=end.replace(/[-:]/g,'');
+      const url='https://calendar.google.com/calendar/render?action=TEMPLATE'
+        +'&text='+encodeURIComponent(title)
+        +'&dates='+encodeURIComponent(gStart+'/'+gEnd)
+        +'&details='+encodeURIComponent(details);
+      window.open(url,'_blank');
+      return;
+    }
+
     const uid=`studio-beauty-${b.id||Date.now()}@agenda`;
     const now=new Date();
     const stamp=`${now.getUTCFullYear()}${p2(now.getUTCMonth()+1)}${p2(now.getUTCDate())}T${p2(now.getUTCHours())}${p2(now.getUTCMinutes())}${p2(now.getUTCSeconds())}Z`;
@@ -355,10 +376,10 @@ function ensureCalendarButton(){
       'BEGIN:VEVENT',
       `UID:${uid}`,
       `DTSTAMP:${stamp}`,
-      `DTSTART:${icsLocal(b.fecha,b.hora_inicio)}`,
-      `DTEND:${icsLocal(b.fecha,b.hora_fin)}`,
-      `SUMMARY:${icsEscape('Cita Studio Beauty - '+servicios)}`,
-      `DESCRIPTION:${icsEscape('Estilista: '+b.estilista+' | '+servicios)}`,
+      `DTSTART:${start}`,
+      `DTEND:${end}`,
+      `SUMMARY:${icsEscape(title)}`,
+      `DESCRIPTION:${icsEscape(details)}`,
       'BEGIN:VALARM',
       'TRIGGER:-PT1H',
       'ACTION:DISPLAY',
@@ -367,8 +388,16 @@ function ensureCalendarButton(){
       'END:VEVENT',
       'END:VCALENDAR'
     ].join('\r\n');
+
     const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
     const href=URL.createObjectURL(blob);
+
+    if(isIOS){
+      window.location.href=href;
+      setTimeout(()=>URL.revokeObjectURL(href),10000);
+      return;
+    }
+
     const a=document.createElement('a');
     a.href=href;
     a.download='cita-studio-beauty.ics';
