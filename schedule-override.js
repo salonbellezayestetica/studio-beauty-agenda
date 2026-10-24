@@ -312,21 +312,34 @@ function icsLocal(date,time){
   const [hh,mm,ss='00']=String(time).split(':');
   return `${y}${m}${d}T${hh}${mm}${ss}`;
 }
-function addClientCalendarButton(){
+function icsEscape(v){
+  return String(v||'').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
+}
+function icsLocal(date,time){
+  const [y,m,d]=String(date).split('-');
+  const [hh,mm,ss='00']=String(time).split(':');
+  return `${y}${m}${d}T${hh}${mm}${ss}`;
+}
+function ensureCalendarButton(){
   const success=document.querySelector('[data-screen="success"] .success-box');
-  if(!success || success.querySelector('#addToCalendarButton'))return;
-  const btn=document.createElement('button');
-  btn.id='addToCalendarButton';
-  btn.type='button';
-  btn.className='cta calendar-cta';
-  btn.textContent='Agregar a mi calendario';
-  const newBtn=document.querySelector('#newBookingButton');
-  success.insertBefore(btn,newBtn);
-
+  if(!success)return;
+  let btn=success.querySelector('#addToCalendarButton');
+  if(!btn){
+    btn=document.createElement('button');
+    btn.id='addToCalendarButton';
+    btn.type='button';
+    btn.className='cta calendar-cta';
+    btn.textContent='Agregar a mi calendario';
+    const newBtn=document.querySelector('#newBookingButton');
+    if(newBtn) success.insertBefore(btn,newBtn);
+    else success.appendChild(btn);
+  }
+  if(btn.dataset.bound==='1')return;
+  btn.dataset.bound='1';
   btn.addEventListener('click',()=>{
     const b=window.STUDIO_LAST_BOOKING;
     if(!b){
-      alert('No encontramos los datos de la cita. Intenta abrir nuevamente tu confirmación.');
+      alert('No encontramos los datos de la cita. Agenda nuevamente para agregarla al calendario.');
       return;
     }
     const servicios=(b.servicios||[]).join(' + ')||'Servicio de belleza';
@@ -365,16 +378,23 @@ function addClientCalendarButton(){
     setTimeout(()=>URL.revokeObjectURL(href),3000);
   });
 }
-
+function watchSuccessScreen(){
+  ensureCalendarButton();
+  const target=document.querySelector('[data-screen="success"]');
+  if(!target)return;
+  const observer=new MutationObserver(()=>ensureCalendarButton());
+  observer.observe(target,{attributes:true,attributeFilter:['class'],childList:true,subtree:true});
+}
 document.addEventListener('DOMContentLoaded',()=>{
   setupStylistFlow();
   setupAdminBlockStylist();
   renderAutomaticScheduleInfo();
-  addClientCalendarButton();
+  ensureCalendarButton();
+  watchSuccessScreen();
   const observer=new MutationObserver(()=>annotateAdminLists());
   const appt=document.querySelector('#appointmentsList');
   const blocks=document.querySelector('#blocksList');
   if(appt)observer.observe(appt,{childList:true});
   if(blocks)observer.observe(blocks,{childList:true});
 });
-setTimeout(()=>{setupStylistFlow();setupAdminBlockStylist();renderAutomaticScheduleInfo();annotateAdminLists();addClientCalendarButton()},0);
+setTimeout(()=>{setupStylistFlow();setupAdminBlockStylist();renderAutomaticScheduleInfo();annotateAdminLists();ensureCalendarButton()},0);
