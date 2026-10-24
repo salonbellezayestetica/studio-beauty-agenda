@@ -1,9 +1,10 @@
-const CACHE_NAME = 'studio-beauty-v7';
+const CACHE_NAME = 'studio-beauty-v9';
 const APP_SHELL = [
   './',
   './index.html',
   './style.css?v=7',
   './app.js?v=7',
+  './schedule-override.js?v=9',
   './manifest.webmanifest',
   './logo-studio-beauty-clean.png?v=6',
   './icon-192.png',
@@ -41,7 +42,6 @@ self.addEventListener('fetch', event => {
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
-  // No interceptar Supabase ni CDN externos.
   if (url.origin !== location.origin) return;
 
   event.respondWith(
