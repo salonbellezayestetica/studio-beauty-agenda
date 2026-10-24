@@ -33,7 +33,7 @@ const SERVICE_DURATIONS = {
   'Pedicure semipermanente':90
 };
 
-window.STUDIO_SELECTED_STYLIST='Ángela';
+window.STUDIO_SELECTED_STYLIST=sessionStorage.getItem('studioBeautyStylist')||'Ángela';
 window.STUDIO_BLOCK_STYLIST='Ángela';
 
 function p2(n){return String(n).padStart(2,'0')}
@@ -47,7 +47,7 @@ function parseDateFilter(values,prefix){
   const raw=values.find(v=>v.startsWith(prefix+'.'));
   return raw?raw.slice(prefix.length+1):null;
 }
-function currentStylist(){return window.STUDIO_SELECTED_STYLIST||'Ángela'}
+function currentStylist(){return sessionStorage.getItem('studioBeautyStylist')||window.STUDIO_SELECTED_STYLIST||'Ángela'}
 
 function activeScheduleFor(date){
   const [y,m,d]=date.split('-').map(Number);
@@ -186,6 +186,7 @@ function createStylistScreen(){
   section.querySelectorAll('.stylist-card').forEach(btn=>{
     btn.addEventListener('click',()=>{
       window.STUDIO_SELECTED_STYLIST=btn.dataset.stylist;
+      sessionStorage.setItem('studioBeautyStylist',btn.dataset.stylist);
       window.__studioStylistChosen=true;
       document.querySelector('#servicesContinue')?.click();
       window.__studioStylistChosen=false;
@@ -219,11 +220,14 @@ function setupStylistFlow(){
   document.querySelector('#datetimeContinue')?.addEventListener('click',()=>{
     setTimeout(()=>{
       const box=document.querySelector('.summary-details');
-      if(!box || box.querySelector('.stylist-summary'))return;
-      const div=document.createElement('div');
-      div.className='stylist-summary';
+      if(!box)return;
+      let div=box.querySelector('.stylist-summary');
+      if(!div){
+        div=document.createElement('div');
+        div.className='stylist-summary';
+        box.prepend(div);
+      }
       div.innerHTML=`<span>✦</span><p><small>Estilista</small><strong>${currentStylist()}</strong></p>`;
-      box.prepend(div);
     },0);
   });
 }
