@@ -755,3 +755,18 @@ input[type="tel"]{
 .stylist-arrow{color:#c87883;font-size:1.3rem}
 .compact-form select{width:100%;height:54px;border:1px solid #ded3cc;border-radius:13px;background:#fff;padding:0 13px;color:var(--ink);font-family:'Manrope',Arial,sans-serif}
 .stylist-badge{display:inline-flex;align-items:center;margin-bottom:7px;padding:5px 9px;border-radius:999px;background:#f8e8ea;color:#a95f6a;font-size:.72rem;font-weight:700}
+
+/* ===== V13: estilista visible en cada cita/bloqueo ===== */
+.stylist-badge{
+  display:inline-flex !important;
+  align-items:center;
+  width:max-content;
+  margin:0 0 8px 0 !important;
+  padding:6px 10px !important;
+  border-radius:999px;
+  background:#f8e8ea !important;
+  color:#a95f6a !important;
+  font-size:.75rem !important;
+  font-weight:700 !important;
+  letter-spacing:.01em;
+}
