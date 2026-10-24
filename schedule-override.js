@@ -116,7 +116,14 @@ window.fetch=async function(input,init={}){
     if(isSupabase && url.pathname.endsWith('/rest/v1/Citas') && method==='POST'){
       const body=JSON.parse(requestInit.body||'{}');
       const apply=o=>({...o,estilista:currentStylist()});
-      requestInit.body=JSON.stringify(Array.isArray(body)?body.map(apply):apply(body));
+      const enriched=Array.isArray(body)?body.map(apply):apply(body);
+      requestInit.body=JSON.stringify(enriched);
+      const first=Array.isArray(enriched)?enriched[0]:enriched;
+      window.STUDIO_LAST_BOOKING={
+        ...first,
+        estilista:currentStylist(),
+        servicios:[...document.querySelectorAll('.service-card.selected strong')].map(x=>x.textContent.trim())
+      };
     }
 
     if(isSupabase && url.pathname.endsWith('/rest/v1/bloqueos') && method==='POST'){
@@ -296,14 +303,78 @@ function annotateAdminLists(){
   }
 }
 
+
+function icsEscape(v){
+  return String(v||'').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
+}
+function icsLocal(date,time){
+  const [y,m,d]=String(date).split('-');
+  const [hh,mm,ss='00']=String(time).split(':');
+  return `${y}${m}${d}T${hh}${mm}${ss}`;
+}
+function addClientCalendarButton(){
+  const success=document.querySelector('[data-screen="success"] .success-box');
+  if(!success || success.querySelector('#addToCalendarButton'))return;
+  const btn=document.createElement('button');
+  btn.id='addToCalendarButton';
+  btn.type='button';
+  btn.className='cta calendar-cta';
+  btn.textContent='Agregar a mi calendario';
+  const newBtn=document.querySelector('#newBookingButton');
+  success.insertBefore(btn,newBtn);
+
+  btn.addEventListener('click',()=>{
+    const b=window.STUDIO_LAST_BOOKING;
+    if(!b){
+      alert('No encontramos los datos de la cita. Intenta abrir nuevamente tu confirmación.');
+      return;
+    }
+    const servicios=(b.servicios||[]).join(' + ')||'Servicio de belleza';
+    const uid=`studio-beauty-${b.id||Date.now()}@agenda`;
+    const now=new Date();
+    const stamp=`${now.getUTCFullYear()}${p2(now.getUTCMonth()+1)}${p2(now.getUTCDate())}T${p2(now.getUTCHours())}${p2(now.getUTCMinutes())}${p2(now.getUTCSeconds())}Z`;
+    const ics=[
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Studio Beauty//Agenda//ES',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART:${icsLocal(b.fecha,b.hora_inicio)}`,
+      `DTEND:${icsLocal(b.fecha,b.hora_fin)}`,
+      `SUMMARY:${icsEscape('Cita Studio Beauty - '+servicios)}`,
+      `DESCRIPTION:${icsEscape('Estilista: '+b.estilista+' | '+servicios)}`,
+      'BEGIN:VALARM',
+      'TRIGGER:-PT1H',
+      'ACTION:DISPLAY',
+      'DESCRIPTION:Recordatorio cita Studio Beauty',
+      'END:VALARM',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+    const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+    const href=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=href;
+    a.download='cita-studio-beauty.ics';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(href),3000);
+  });
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   setupStylistFlow();
   setupAdminBlockStylist();
   renderAutomaticScheduleInfo();
+  addClientCalendarButton();
   const observer=new MutationObserver(()=>annotateAdminLists());
   const appt=document.querySelector('#appointmentsList');
   const blocks=document.querySelector('#blocksList');
   if(appt)observer.observe(appt,{childList:true});
   if(blocks)observer.observe(blocks,{childList:true});
 });
-setTimeout(()=>{setupStylistFlow();setupAdminBlockStylist();renderAutomaticScheduleInfo();annotateAdminLists()},0);
+setTimeout(()=>{setupStylistFlow();setupAdminBlockStylist();renderAutomaticScheduleInfo();annotateAdminLists();addClientCalendarButton()},0);
