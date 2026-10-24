@@ -770,3 +770,16 @@ input[type="tel"]{
   font-weight:700 !important;
   letter-spacing:.01em;
 }
+
+/* ===== V14: botón agregar a calendario ===== */
+.calendar-cta{
+  width:100%;
+  min-height:54px;
+  margin:14px 0 10px;
+  border:1px solid #d9c8be;
+  border-radius:999px;
+  background:#fffdfa;
+  color:#8f5f64;
+  font-weight:700;
+  box-shadow:0 8px 20px rgba(73,48,34,.08);
+}
