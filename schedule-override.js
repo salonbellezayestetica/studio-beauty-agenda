@@ -276,7 +276,7 @@ function annotateAdminLists(){
       if(name){
         const badge=document.createElement('span');
         badge.className='stylist-badge';
-        badge.textContent=name;
+        badge.textContent=`Estilista: ${name}`;
         item.prepend(badge);
       }
     });
