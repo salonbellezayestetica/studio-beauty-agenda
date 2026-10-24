@@ -744,3 +744,14 @@ input[type="tel"]{
     grid-template-columns:1fr;
   }
 }
+
+/* ===== V11: selección de estilista ===== */
+.stylist-grid{display:grid;gap:12px;margin-top:18px}
+.stylist-card{width:100%;display:grid;grid-template-columns:50px 1fr auto;gap:14px;align-items:center;padding:16px;border:1px solid var(--line);border-radius:18px;background:#fff;text-align:left;box-shadow:0 8px 24px rgba(58,37,27,.06);cursor:pointer}
+.stylist-card:active{transform:scale(.99)}
+.stylist-avatar{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#f5e5e2;color:#b86f7b;font-family:'DM Serif Display',Georgia,serif;font-size:1.4rem}
+.stylist-card strong{display:block;font-size:1rem}
+.stylist-card small{display:block;margin-top:4px;color:#756a66;font-size:.82rem;line-height:1.35}
+.stylist-arrow{color:#c87883;font-size:1.3rem}
+.compact-form select{width:100%;height:54px;border:1px solid #ded3cc;border-radius:13px;background:#fff;padding:0 13px;color:var(--ink);font-family:'Manrope',Arial,sans-serif}
+.stylist-badge{display:inline-flex;align-items:center;margin-bottom:7px;padding:5px 9px;border-radius:999px;background:#f8e8ea;color:#a95f6a;font-size:.72rem;font-weight:700}
