@@ -289,7 +289,7 @@ async function addAvailability(e){
 }
 async function loadAppointments(){
   els.appointmentsList.innerHTML='';els.appointmentsStatus.textContent='Cargando...'
-  const {data:appointments,error}=await supabase.from('Citas').select('id,nombre_cliente,whatsapp,fecha,hora_inicio,hora_fin,estado').gte('fecha',todayStr()).neq('estado','cancelada').order('fecha').order('hora_inicio')
+  const {data:appointments,error}=await supabase.from('Citas').select('id,nombre_cliente,whatsapp,fecha,hora_inicio,hora_fin,estado,estilista').gte('fecha',todayStr()).neq('estado','cancelada').order('fecha').order('hora_inicio')
   if(error){console.error(error);els.appointmentsStatus.className='status error';els.appointmentsStatus.textContent='No pudimos cargar las citas.';return}
   const ids=(appointments||[]).map(x=>x.id);let links=[]
   if(ids.length){const r=await supabase.from('cita_servicios').select('cita_id,servicio_id').in('cita_id',ids);links=r.data||[]}
@@ -307,8 +307,68 @@ async function loadAppointments(){
         <p>WhatsApp: ${escapeHtml(a.whatsapp)}</p>
       </div>
       <div class="appointment-actions">
+        <button class="small-btn edit-appointment-btn" type="button">Modificar cita</button>
         <button class="danger-btn cancel-appointment-btn" type="button">Cancelar cita</button>
+      </div>
+      <div class="appointment-edit-panel" hidden>
+        <label>Fecha<input class="edit-appt-date" type="date" value="${escapeHtml(a.fecha)}"></label>
+        <div class="two-cols">
+          <label>Hora inicio<input class="edit-appt-start" type="time" value="${escapeHtml(String(a.hora_inicio).slice(0,5))}"></label>
+          <label>Hora final<input class="edit-appt-end" type="time" value="${escapeHtml(String(a.hora_fin).slice(0,5))}"></label>
+        </div>
+        <label>Manicurista
+          <select class="edit-appt-stylist">
+            <option value="Ángela" ${(a.estilista||'Ángela')==='Ángela'?'selected':''}>Ángela</option>
+            <option value="Liseth" ${a.estilista==='Liseth'?'selected':''}>Liseth</option>
+          </select>
+        </label>
+        <div class="appointment-edit-actions">
+          <button class="small-btn save-appointment-edit" type="button">Guardar cambios</button>
+          <button class="small-btn close-appointment-edit" type="button">Cerrar</button>
+        </div>
+        <p class="status appointment-edit-status"></p>
       </div>`
+    const editBtn=item.querySelector('.edit-appointment-btn')
+    const editPanel=item.querySelector('.appointment-edit-panel')
+    editBtn.onclick=()=>{
+      editPanel.hidden=!editPanel.hidden
+      if(!editPanel.hidden)editPanel.scrollIntoView({behavior:'smooth',block:'nearest'})
+    }
+    item.querySelector('.close-appointment-edit').onclick=()=>{editPanel.hidden=true}
+    item.querySelector('.save-appointment-edit').onclick=async()=>{
+      const status=item.querySelector('.appointment-edit-status')
+      const fecha=item.querySelector('.edit-appt-date').value
+      const inicio=item.querySelector('.edit-appt-start').value
+      const fin=item.querySelector('.edit-appt-end').value
+      const estilista=item.querySelector('.edit-appt-stylist').value
+      status.className='status appointment-edit-status'
+      if(!fecha||!inicio||!fin){
+        status.classList.add('error')
+        status.textContent='Completa fecha, hora de inicio y hora final.'
+        return
+      }
+      if(fin<=inicio){
+        status.classList.add('error')
+        status.textContent='La hora final debe ser posterior a la hora de inicio.'
+        return
+      }
+      status.textContent='Guardando cambios...'
+      const {error}=await supabase.from('Citas').update({
+        fecha,
+        hora_inicio:inicio,
+        hora_fin:fin,
+        estilista
+      }).eq('id',a.id)
+      if(error){
+        console.error(error)
+        status.classList.add('error')
+        status.textContent='No pudimos modificar la cita.'
+        return
+      }
+      status.classList.add('success')
+      status.textContent='Cita modificada correctamente.'
+      await loadAppointments()
+    }
     item.querySelector('.cancel-appointment-btn').onclick=async()=>{
       const ok=window.confirm(`¿Cancelar la cita de ${a.nombre_cliente}? El horario volverá a quedar disponible.`)
       if(!ok)return
