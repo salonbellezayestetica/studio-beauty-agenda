@@ -878,3 +878,11 @@ input[type="tel"]{
   font-weight:600 !important;
   opacity:.72 !important;
 }
+
+/* ===== V21: separar acceso estilista del botón principal ===== */
+.home-admin-link{
+  bottom:max(28px,calc(env(safe-area-inset-bottom) + 28px)) !important;
+}
+.home-contact-link{
+  bottom:max(6px,env(safe-area-inset-bottom)) !important;
+}
