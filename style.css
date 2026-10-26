@@ -863,3 +863,10 @@ input[type="tel"]{
 .home-admin-link{
   bottom:max(62px,calc(env(safe-area-inset-bottom) + 62px)) !important;
 }
+
+/* ===== V19: crédito mínimo ===== */
+.home-contact-link{
+  font-size:.48rem !important;
+  opacity:.48 !important;
+  letter-spacing:.01em !important;
+}
