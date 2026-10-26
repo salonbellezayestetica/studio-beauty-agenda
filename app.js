@@ -15,7 +15,8 @@ const LOCAL_SERVICE_IMAGES = {
   'Recubrimiento con Builder Gel': 'builder-gel.jpg',
   'Dipping en uñas naturales': 'dipping.jpg',
   'Pedicure tradicional': 'pedicure-tradicional.jpg',
-  'Pedicure semipermanente': 'pedicure-semipermanente.jpg'
+  'Pedicure semipermanente': 'pedicure-semipermanente.jpg',
+  'Pedicure + reconstrucción de 2 uñas': 'pedicure-semipermanente.jpg'
 }
 
 const state = {
