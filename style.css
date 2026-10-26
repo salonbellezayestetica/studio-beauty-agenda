@@ -886,3 +886,54 @@ input[type="tel"]{
 .home-contact-link{
   bottom:max(6px,env(safe-area-inset-bottom)) !important;
 }
+
+/* ===== V22: editar citas desde panel ===== */
+.appointment-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.appointment-edit-panel{
+  width:100%;
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid var(--line);
+}
+.appointment-edit-panel[hidden]{display:none !important}
+.appointment-edit-panel label{
+  display:grid;
+  gap:7px;
+  margin-bottom:12px;
+  font-size:.86rem;
+  font-weight:600;
+}
+.appointment-edit-panel input,
+.appointment-edit-panel select{
+  width:100%;
+  min-height:46px;
+  border:1px solid #ded3cc;
+  border-radius:12px;
+  background:#fff;
+  padding:0 12px;
+  color:var(--ink);
+  font-family:'Manrope',Arial,sans-serif;
+}
+.appointment-edit-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+@media(max-width:520px){
+  .appointment-actions{
+    display:grid !important;
+    grid-template-columns:1fr 1fr;
+    width:100% !important;
+  }
+  .appointment-actions button{
+    width:100%;
+  }
+  .appointment-edit-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+}
