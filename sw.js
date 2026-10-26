@@ -1,8 +1,8 @@
-const CACHE_NAME = 'studio-beauty-v10';
+const CACHE_NAME = 'studio-beauty-v11';
 const APP_SHELL = [
   './',
   './index.html',
-  './style.css?v=16',
+  './style.css?v=17',
   './app.js?v=7',
   './schedule-override.js?v=17',
   './manifest.webmanifest',
