@@ -1,12 +1,12 @@
 const STYLISTS = {
   'Ángela': {
     schedule: {
-      1:{morning:{start:420,end:720},afternoon:{start:810,lastStart:1110}},
-      2:{morning:{start:420,end:720},afternoon:{start:810,lastStart:990}},
-      3:{morning:{start:420,end:720},afternoon:{start:810,lastStart:1110}},
-      4:{morning:{start:420,end:720},afternoon:{start:810,lastStart:990}},
-      5:{morning:{start:420,end:720},afternoon:{start:810,lastStart:1110}},
-      6:{morning:{start:420,end:720},afternoon:{start:810,lastStart:990}}
+      1:{morning:{start:420,end:720},afternoon:{start:780,lastStart:1110}},
+      2:{morning:{start:420,end:720},afternoon:{start:780,lastStart:990}},
+      3:{morning:{start:420,end:720},afternoon:{start:780,lastStart:1110}},
+      4:{morning:{start:420,end:720},afternoon:{start:780,lastStart:990}},
+      5:{morning:{start:420,end:720},afternoon:{start:780,lastStart:1110}},
+      6:{morning:{start:420,end:720},afternoon:{start:780,lastStart:990}}
     }
   },
   'Liseth': {
@@ -266,8 +266,8 @@ function renderAutomaticScheduleInfo(){
     const box=document.createElement('div');
     box.className='automatic-schedule-card admin-list';
     box.innerHTML=`
-      <div class="admin-item"><strong>Ángela · lunes, miércoles y viernes</strong><p>7:00 a. m.–12:00 m. · desde 1:30 p. m. · último turno 6:30 p. m.</p></div>
-      <div class="admin-item"><strong>Ángela · martes, jueves y sábado</strong><p>7:00 a. m.–12:00 m. · desde 1:30 p. m. · último turno 4:30 p. m.</p></div>
+      <div class="admin-item"><strong>Ángela · lunes, miércoles y viernes</strong><p>7:00 a. m.–12:00 m. · desde 1:00 p. m. · último turno 6:30 p. m.</p></div>
+      <div class="admin-item"><strong>Ángela · martes, jueves y sábado</strong><p>7:00 a. m.–12:00 m. · desde 1:00 p. m. · último turno 4:30 p. m.</p></div>
       <div class="admin-item"><strong>Liseth · lunes a sábado</strong><p>Desde 2:00 p. m. · último turno 4:30 p. m.</p></div>
       <div class="admin-item"><strong>Domingo</strong><p>Cerrado.</p></div>`;
     section.appendChild(box);
