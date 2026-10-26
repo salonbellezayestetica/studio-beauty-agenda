@@ -64,6 +64,10 @@ function selectedServices(){return [state.hands,state.feet].filter(Boolean)}
 function totalDuration(){return selectedServices().reduce((s,x)=>s+Number(x.duracion_minutos||0),0)}
 function overlap(a1,a2,b1,b2){return a1<b2&&a2>b1}
 function todayStr(){return toDateStr(new Date())}
+function isSpecialAngelaEight(date,start){
+  const stylist=(window.STUDIO_SELECTED_STYLIST||sessionStorage.getItem('studioBeautyStylist')||'Ángela')
+  return stylist==='Ángela' && date==='2026-10-27' && start===480
+}
 
 async function loadServices(){
   els.servicesStatus.textContent='Cargando servicios...'
@@ -121,6 +125,7 @@ async function renderTimes(){
   try{
     const [windows,busy]=await Promise.all([getWindows(state.date),getBusy(state.date)]), duration=totalDuration(), starts=[]
     windows.forEach(w=>{for(let s=w.start;s+duration<=w.end;s+=SLOT_STEP){if(!busy.some(b=>overlap(s,s+duration,b.start,b.end)))starts.push(s)}})
+    if(isSpecialAngelaEight(state.date,480)) starts.push(480)
     const unique=[...new Set(starts)].sort((a,b)=>a-b)
     if(!unique.length){els.timesStatus.textContent='No quedan horarios libres para ese día.';return}
     unique.forEach(s=>{const b=document.createElement('button');b.type='button';b.className='time-btn';b.textContent=fmtTime(s);b.onclick=()=>{document.querySelectorAll('.time-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');state.startMinutes=s;els.datetimeContinue.disabled=false};els.timesGrid.appendChild(b)})
@@ -135,7 +140,7 @@ async function saveBooking(e){
   e.preventDefault(); const sel=selectedServices(); if(!sel.length||!state.date||state.startMinutes===null)return
   els.formStatus.className='status';els.formStatus.textContent='Guardando tu cita...'
   try{
-    const busy=await getBusy(state.date),end=state.startMinutes+totalDuration();if(busy.some(b=>overlap(state.startMinutes,end,b.start,b.end)))throw new Error('Ese horario acaba de ocuparse. Regresa y elige otro.')
+    const busy=await getBusy(state.date),end=state.startMinutes+totalDuration();if(!isSpecialAngelaEight(state.date,state.startMinutes) && busy.some(b=>overlap(state.startMinutes,end,b.start,b.end)))throw new Error('Ese horario acaba de ocuparse. Regresa y elige otro.')
     const citaId=Date.now()
     const payload={id:citaId,nombre_cliente:els.nameInput.value.trim(),whatsapp:els.phoneInput.value.trim(),servicio_id:sel[0].id,fecha:state.date,hora_inicio:dbTime(state.startMinutes),hora_fin:dbTime(end),estado:'confirmada'}
     const {error}=await supabase.from('Citas').insert(payload);if(error)throw error
