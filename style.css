@@ -858,3 +858,8 @@ input[type="tel"]{
 .home-admin-link{
   bottom:max(34px,calc(env(safe-area-inset-bottom) + 34px)) !important;
 }
+
+/* ===== V18: separar claramente acceso estilista del crédito ===== */
+.home-admin-link{
+  bottom:max(62px,calc(env(safe-area-inset-bottom) + 62px)) !important;
+}
