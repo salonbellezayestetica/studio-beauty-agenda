@@ -853,3 +853,8 @@ input[type="tel"]{
   transform:translateX(-50%) !important;
   opacity:.9 !important;
 }
+
+/* ===== V17: subir acceso estilista ===== */
+.home-admin-link{
+  bottom:max(34px,calc(env(safe-area-inset-bottom) + 34px)) !important;
+}
