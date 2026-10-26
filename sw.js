@@ -1,9 +1,9 @@
-const CACHE_NAME = 'studio-beauty-v16';
+const CACHE_NAME = 'studio-beauty-v17';
 const APP_SHELL = [
   './',
   './index.html',
   './style.css?v=21',
-  './app.js?v=8',
+  './app.js?v=9',
   './schedule-override.js?v=18',
   './manifest.webmanifest',
   './logo-studio-beauty-clean.png?v=6',
@@ -20,7 +20,8 @@ const APP_SHELL = [
   './builder-gel.jpg',
   './dipping.jpg',
   './pedicure-tradicional.jpg',
-  './pedicure-semipermanente.jpg'
+  './pedicure-semipermanente.jpg',
+  './pedicure-reconstruccion.jpg'
 ];
 
 self.addEventListener('install', event => {
