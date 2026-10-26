@@ -800,3 +800,25 @@ input[type="tel"]{
   font-weight:700;
   cursor:pointer;
 }
+
+/* ===== V15: contacto de creadora en portada ===== */
+.home-contact-link{
+  position:absolute;
+  left:50%;
+  bottom:48px;
+  transform:translateX(-50%);
+  width:max-content;
+  max-width:90%;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,250,247,.88);
+  color:#705f58;
+  font-size:.68rem;
+  font-weight:700;
+  line-height:1.2;
+  text-align:center;
+  text-decoration:none;
+  white-space:normal;
+  box-shadow:0 4px 14px rgba(65,42,32,.10);
+}
+.home-contact-link:active{transform:translateX(-50%) scale(.98)}
