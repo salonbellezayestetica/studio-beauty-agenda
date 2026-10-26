@@ -30,7 +30,8 @@ const SERVICE_DURATIONS = {
   'Recubrimiento con Builder Gel':150,
   'Dipping en uñas naturales':150,
   'Pedicure tradicional':75,
-  'Pedicure semipermanente':90
+  'Pedicure semipermanente':90,
+  'Pedicure + reconstrucción de 2 uñas':90
 };
 
 window.STUDIO_SELECTED_STYLIST=sessionStorage.getItem('studioBeautyStylist')||'Ángela';
