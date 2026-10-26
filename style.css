@@ -870,3 +870,11 @@ input[type="tel"]{
   opacity:.48 !important;
   letter-spacing:.01em !important;
 }
+
+/* ===== V20: crédito discreto pero legible ===== */
+.home-contact-link{
+  color:#756861 !important;
+  font-size:.52rem !important;
+  font-weight:600 !important;
+  opacity:.72 !important;
+}
