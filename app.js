@@ -52,6 +52,12 @@ function parseDbTime(t){const [h,m]=String(t).split(':').map(Number);return h*60
 function dbTime(m){return `${pad(Math.floor(m/60))}:${pad(m%60)}:00`}
 function fmtTime(m){const h=Math.floor(m/60),mm=m%60,p=h>=12?'p. m.':'a. m.';return `${h%12||12}:${pad(mm)} ${p}`}
 function fmtDate(v){const [y,m,d]=v.split('-').map(Number);return new Intl.DateTimeFormat('es-CO',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date(y,m-1,d))}
+function whatsappNumber(v){
+  let n=String(v||'').replace(/\D/g,'')
+  if(n.startsWith('57')&&n.length===12)return n
+  if(n.length===10&&n.startsWith('3'))return '57'+n
+  return n
+}
 function fmtMoney(v){return new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(Number(v||0))}
 function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function selectedServices(){return [state.hands,state.feet].filter(Boolean)}
@@ -308,6 +314,7 @@ async function loadAppointments(){
       </div>
       <div class="appointment-actions">
         <button class="small-btn edit-appointment-btn" type="button">Modificar cita</button>
+        <button class="small-btn whatsapp-appointment-btn" type="button">Avisar por WhatsApp</button>
         <button class="danger-btn cancel-appointment-btn" type="button">Cancelar cita</button>
       </div>
       <div class="appointment-edit-panel" hidden>
@@ -328,6 +335,26 @@ async function loadAppointments(){
         </div>
         <p class="status appointment-edit-status"></p>
       </div>`
+    item.querySelector('.whatsapp-appointment-btn').onclick=()=>{
+      const phone=whatsappNumber(a.whatsapp)
+      if(!phone){
+        els.appointmentsStatus.className='status error'
+        els.appointmentsStatus.textContent='Esta cita no tiene un WhatsApp válido.'
+        return
+      }
+      const servicio=names.join(' + ')||'tu servicio'
+      const msg=[
+        'Hola '+a.nombre_cliente+' 😊',
+        '',
+        'Tu cita en Studio Beauty fue actualizada.',
+        '📅 Fecha: '+fmtDate(a.fecha),
+        '🕐 Hora: '+fmtTime(parseDbTime(a.hora_inicio)),
+        '💅 Servicio: '+servicio,
+        '',
+        'Te esperamos ✨'
+      ].join('\n')
+      window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank')
+    }
     const editBtn=item.querySelector('.edit-appointment-btn')
     const editPanel=item.querySelector('.appointment-edit-panel')
     editBtn.onclick=()=>{
