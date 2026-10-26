@@ -822,3 +822,34 @@ input[type="tel"]{
   box-shadow:0 4px 14px rgba(65,42,32,.10);
 }
 .home-contact-link:active{transform:translateX(-50%) scale(.98)}
+
+/* ===== V16: crédito discreto de creadora ===== */
+.home-admin-link{
+  bottom:max(24px,calc(env(safe-area-inset-bottom) + 24px)) !important;
+}
+.home-contact-link{
+  position:absolute !important;
+  left:50% !important;
+  bottom:max(5px,env(safe-area-inset-bottom)) !important;
+  transform:translateX(-50%) !important;
+  width:max-content !important;
+  max-width:92% !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  backdrop-filter:none !important;
+  box-shadow:none !important;
+  color:#8f817b !important;
+  font-size:.52rem !important;
+  font-weight:500 !important;
+  line-height:1.15 !important;
+  text-align:center !important;
+  text-decoration:none !important;
+  white-space:nowrap !important;
+  opacity:.62 !important;
+}
+.home-contact-link:active{
+  transform:translateX(-50%) !important;
+  opacity:.9 !important;
+}
