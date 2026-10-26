@@ -67,7 +67,7 @@ async function loadServices(){
 }
 function serviceCard(s,category){
   const b=document.createElement('button'); b.type='button'; b.className='service-card'
-  const imageSrc=s.imagen_url || LOCAL_SERVICE_IMAGES[s.nombre]
+  const imageSrc=LOCAL_SERVICE_IMAGES[s.nombre] || s.imagen_url
   const img=imageSrc?`<img class="service-photo" src="${escapeHtml(imageSrc)}" alt="${escapeHtml(s.nombre)}" loading="lazy">`:`<div class="service-photo"></div>`
   b.innerHTML=`${img}<span class="service-copy"><strong>${escapeHtml(s.nombre)}</strong><span>${fmtMoney(s.precio)}</span></span><span class="service-tick">✓</span>`
   const refresh=()=>b.classList.toggle('selected',(category==='manos'?state.hands:state.feet)?.id===s.id)
