@@ -1,10 +1,10 @@
-const CACHE_NAME = 'studio-beauty-v22';
+const CACHE_NAME = 'studio-beauty-v23';
 const APP_SHELL = [
   './',
   './index.html',
   './style.css?v=22',
-  './app.js?v=14',
-  './schedule-override.js?v=18',
+  './app.js?v=19',
+  './schedule-override.js?v=20',
   './manifest.webmanifest',
   './logo-studio-beauty-clean.png?v=6',
   './icon-192.png',
