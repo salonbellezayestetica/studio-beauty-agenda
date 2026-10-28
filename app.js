@@ -64,6 +64,10 @@ function selectedServices(){return [state.hands,state.feet].filter(Boolean)}
 function totalDuration(){return selectedServices().reduce((s,x)=>s+Number(x.duracion_minutos||0),0)}
 function overlap(a1,a2,b1,b2){return a1<b2&&a2>b1}
 function todayStr(){return toDateStr(new Date())}
+function isSpecialAngelaNov3(date){
+  const stylist=(window.STUDIO_SELECTED_STYLIST||sessionStorage.getItem('studioBeautyStylist')||'Ángela')
+  return stylist==='Ángela' && date==='2026-11-03'
+}
 function isSpecialAngelaEight(date,start){
   const stylist=(window.STUDIO_SELECTED_STYLIST||sessionStorage.getItem('studioBeautyStylist')||'Ángela')
   return stylist==='Ángela' && date==='2026-10-27' && start===480
@@ -126,6 +130,11 @@ async function renderTimes(){
     const [windows,busy]=await Promise.all([getWindows(state.date),getBusy(state.date)]), duration=totalDuration(), starts=[]
     windows.forEach(w=>{for(let s=w.start;s+duration<=w.end;s+=SLOT_STEP){if(!busy.some(b=>overlap(s,s+duration,b.start,b.end)))starts.push(s)}})
     if(isSpecialAngelaEight(state.date,480)) starts.push(480)
+    if(isSpecialAngelaNov3(state.date)){
+      for(let s=420;s<720;s+=30){
+        if(!busy.some(b=>overlap(s,s+Math.min(duration,30),b.start,b.end))) starts.push(s)
+      }
+    }
     const unique=[...new Set(starts)].sort((a,b)=>a-b)
     if(!unique.length){els.timesStatus.textContent='No quedan horarios libres para ese día.';return}
     unique.forEach(s=>{const b=document.createElement('button');b.type='button';b.className='time-btn';b.textContent=fmtTime(s);b.onclick=()=>{document.querySelectorAll('.time-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');state.startMinutes=s;els.datetimeContinue.disabled=false};els.timesGrid.appendChild(b)})
