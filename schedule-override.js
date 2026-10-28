@@ -40,6 +40,7 @@ window.STUDIO_BLOCK_STYLIST='Ángela';
 function p2(n){return String(n).padStart(2,'0')}
 function localDateStr(d){return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`}
 function minsToDb(m){return `${p2(Math.floor(m/60))}:${p2(m%60)}:00`}
+function parseDbMinutes(t){const [h,m]=String(t).split(':').map(Number);return h*60+m}
 function selectedDuration(){
   const names=[...document.querySelectorAll('.service-card.selected strong')].map(x=>x.textContent.trim());
   return names.reduce((sum,name)=>sum+(SERVICE_DURATIONS[name]||0),0)||30;
@@ -49,18 +50,38 @@ function parseDateFilter(values,prefix){
   return raw?raw.slice(prefix.length+1):null;
 }
 function currentStylist(){return sessionStorage.getItem('studioBeautyStylist')||window.STUDIO_SELECTED_STYLIST||'Ángela'}
+function specialMarkerForStylist(stylist){return stylist==='Liseth'?'02':'01'}
+function isSpecialRowForStylist(row,stylist){
+  return String(row?.hora_inicio||'').endsWith(':'+specialMarkerForStylist(stylist))
+}
 
 function activeScheduleFor(date){
   const stylist=currentStylist();
-  if(stylist==='Liseth' && date==='2026-10-29'){
-    return {afternoon:{start:840,lastStart:1050}};
-  }
   const [y,m,d]=date.split('-').map(Number);
   const dow=new Date(y,m-1,d).getDay();
   return STYLISTS[stylist]?.schedule?.[dow]||null;
 }
 
-function scheduleRowsFor(date){
+async function scheduleRowsFor(date){
+  const stylist=currentStylist();
+  const marker=specialMarkerForStylist(stylist);
+  try{
+    const url=new URL('https://ywbmlsfxvytdmnkyjial.supabase.co/rest/v1/disponibilidad');
+    url.searchParams.set('select','fecha,hora_inicio,hora_fin,activo');
+    url.searchParams.set('fecha','eq.'+date);
+    const resp=await nativeFetch(url.toString(),{
+      headers:{apikey:'sb_publishable_Esj-3c_n0bYl0QwHzIp7kg_jGuUS2j9'}
+    });
+    const data=await resp.json().catch(()=>[]);
+    const special=(data||[]).find(r=>String(r.hora_inicio||'').endsWith(':'+marker));
+    if(special){
+      const duration=selectedDuration();
+      const start=parseDbMinutes(special.hora_inicio);
+      const lastStart=parseDbMinutes(special.hora_fin);
+      return [{hora_inicio:minsToDb(start),hora_fin:minsToDb(lastStart+duration)}];
+    }
+  }catch(e){console.error('Horario especial',e)}
+
   const day=activeScheduleFor(date);
   if(!day)return [];
   const duration=selectedDuration();
@@ -91,7 +112,7 @@ window.fetch=async function(input,init={}){
       const lteDate=parseDateFilter(filters,'lte');
 
       if(eqDate && select.includes('hora_inicio')){
-        return new Response(JSON.stringify(scheduleRowsFor(eqDate)),{status:200,headers:{'Content-Type':'application/json'}});
+        return new Response(JSON.stringify(await scheduleRowsFor(eqDate)),{status:200,headers:{'Content-Type':'application/json'}});
       }
 
       if(gteDate && lteDate && select.includes('fecha')){
