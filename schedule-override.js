@@ -51,9 +51,13 @@ function parseDateFilter(values,prefix){
 function currentStylist(){return sessionStorage.getItem('studioBeautyStylist')||window.STUDIO_SELECTED_STYLIST||'Ángela'}
 
 function activeScheduleFor(date){
+  const stylist=currentStylist();
+  if(stylist==='Liseth' && date==='2026-10-29'){
+    return {afternoon:{start:840,lastStart:1050}};
+  }
   const [y,m,d]=date.split('-').map(Number);
   const dow=new Date(y,m-1,d).getDay();
-  return STYLISTS[currentStylist()]?.schedule?.[dow]||null;
+  return STYLISTS[stylist]?.schedule?.[dow]||null;
 }
 
 function scheduleRowsFor(date){
