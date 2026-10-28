@@ -145,6 +145,31 @@
             <div id="availabilityList" class="admin-list"></div>
           </div>
 
+          <div class="admin-section accent-section">
+            <div class="section-heading">
+              <div><p class="eyebrow">Excepciones</p><h3>Horario especial</h3></div>
+              <button id="refreshSpecialSchedules" class="small-btn" type="button">Actualizar</button>
+            </div>
+            <p class="admin-help">Úsalo para ampliar el horario de Ángela o Liseth en un día puntual, sin cambiar sus horarios normales.</p>
+            <form id="specialScheduleForm" class="compact-form">
+              <label>Manicurista
+                <select id="specialScheduleStylist" required>
+                  <option value="Ángela">Ángela</option>
+                  <option value="Liseth">Liseth</option>
+                </select>
+              </label>
+              <label>Fecha<input id="specialScheduleDate" type="date" required></label>
+              <div class="two-cols">
+                <label>Disponible desde<input id="specialScheduleStart" type="time" required></label>
+                <label>Último turno<input id="specialScheduleEnd" type="time" required></label>
+              </div>
+              <button class="cta full" type="submit">Guardar horario especial</button>
+              <p class="admin-help">Ejemplo: Liseth · 29/10 · desde 5:30 p. m. · último turno 7:00 p. m.</p>
+              <p id="specialScheduleStatus" class="status"></p>
+            </form>
+            <div id="specialScheduleList" class="admin-list"></div>
+          </div>
+
           <div class="admin-section">
             <div class="section-heading"><h3>Próximas citas</h3><button id="refreshAppointments" class="small-btn" type="button">Actualizar</button></div>
             <div id="appointmentsList" class="admin-list"></div>
@@ -181,6 +206,6 @@
       </section>
     </main>
   </div>
-  <script src="schedule-override.js?v=19"></script>\n  <script type="module" src="app.js?v=18"></script>
+  <script src="schedule-override.js?v=20"></script>\n  <script type="module" src="app.js?v=19"></script>
 </body>
 </html>
