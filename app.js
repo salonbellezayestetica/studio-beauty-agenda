@@ -32,6 +32,7 @@ const els = {
   confirmServices: $('#confirmServices'), summaryDate: $('#summaryDate'), summaryTime: $('#summaryTime'), bookingForm: $('#bookingForm'), nameInput: $('#nameInput'), phoneInput: $('#phoneInput'), formStatus: $('#formStatus'),
   loginForm: $('#loginForm'), loginEmail: $('#loginEmail'), loginPassword: $('#loginPassword'), loginStatus: $('#loginStatus'), logoutButton: $('#logoutButton'),
   availabilityForm: $('#availabilityForm'), availabilityDate: $('#availabilityDate'), availabilityEndDate: $('#availabilityEndDate'), availabilityStart: $('#availabilityStart'), availabilityEnd: $('#availabilityEnd'), availabilitySubmit: $('#availabilitySubmit'), availabilityStatus: $('#availabilityStatus'), availabilityList: $('#availabilityList'), refreshAvailability: $('#refreshAvailability'),
+  specialScheduleForm: $('#specialScheduleForm'), specialScheduleStylist: $('#specialScheduleStylist'), specialScheduleDate: $('#specialScheduleDate'), specialScheduleStart: $('#specialScheduleStart'), specialScheduleEnd: $('#specialScheduleEnd'), specialScheduleStatus: $('#specialScheduleStatus'), specialScheduleList: $('#specialScheduleList'), refreshSpecialSchedules: $('#refreshSpecialSchedules'),
   appointmentsList: $('#appointmentsList'), appointmentsStatus: $('#appointmentsStatus'), refreshAppointments: $('#refreshAppointments'),
   blockForm: $('#blockForm'), blockDate: $('#blockDate'), blockStart: $('#blockStart'), blockEnd: $('#blockEnd'), blockReason: $('#blockReason'), blockStatus: $('#blockStatus'), blocksList: $('#blocksList'), refreshBlocks: $('#refreshBlocks'),
   successText: $('#successText'), newBookingButton: $('#newBookingButton'), installAppButton: $('#installAppButton'), shareAgendaButton: $('#shareAgendaButton'), appInstallHint: $('#appInstallHint')
@@ -166,7 +167,88 @@ function resetBooking(){state.hands=null;state.feet=null;state.date='';state.sta
 
 async function login(e){e.preventDefault();els.loginStatus.textContent='Ingresando...';const {error}=await supabase.auth.signInWithPassword({email:els.loginEmail.value.trim(),password:els.loginPassword.value});if(error){els.loginStatus.className='status error';els.loginStatus.textContent='Correo o contraseña incorrectos.';return}els.loginStatus.textContent='';showScreen('admin');await loadAdminAll()}
 async function logout(){await supabase.auth.signOut();showScreen('home')}
-async function loadAdminAll(){await Promise.all([loadAvailabilityAdmin(),loadAppointments(),loadBlocks()])}
+async function loadAdminAll(){await Promise.all([loadAvailabilityAdmin(),loadSpecialSchedules(),loadAppointments(),loadBlocks()])}
+
+function specialMarker(stylist){return stylist==='Liseth'?'02':'01'}
+function specialStylistFromTime(v){
+  const s=String(v||'')
+  if(s.endsWith(':01'))return 'Ángela'
+  if(s.endsWith(':02'))return 'Liseth'
+  return null
+}
+function specialDbTime(v,stylist){
+  const [h,m]=String(v).split(':')
+  return `${h}:${m}:${specialMarker(stylist)}`
+}
+async function loadSpecialSchedules(){
+  if(!els.specialScheduleList)return
+  els.specialScheduleList.innerHTML=''
+  const {data,error}=await supabase.from('disponibilidad').select('*').gte('fecha',todayStr()).order('fecha').order('hora_inicio')
+  if(error){
+    els.specialScheduleStatus.className='status error'
+    els.specialScheduleStatus.textContent='No pudimos cargar los horarios especiales.'
+    return
+  }
+  const rows=(data||[]).filter(r=>specialStylistFromTime(r.hora_inicio))
+  els.specialScheduleStatus.textContent=''
+  if(!rows.length){
+    els.specialScheduleList.innerHTML='<div class="admin-item"><p>No hay horarios especiales próximos.</p></div>'
+    return
+  }
+  rows.forEach(r=>{
+    const stylist=specialStylistFromTime(r.hora_inicio)
+    const item=document.createElement('div')
+    item.className='admin-item'
+    item.innerHTML=`<div class="admin-item-top"><div><strong>${escapeHtml(stylist)} · ${escapeHtml(fmtDate(r.fecha))}</strong><p>${fmtTime(parseDbTime(r.hora_inicio))} – último turno ${fmtTime(parseDbTime(r.hora_fin))}</p></div><button class="danger-btn" type="button">Eliminar</button></div>`
+    item.querySelector('button').onclick=async()=>{
+      await supabase.from('disponibilidad').delete().eq('id',r.id)
+      await loadSpecialSchedules()
+    }
+    els.specialScheduleList.appendChild(item)
+  })
+}
+async function saveSpecialSchedule(e){
+  e.preventDefault()
+  const stylist=els.specialScheduleStylist.value
+  const fecha=els.specialScheduleDate.value
+  const start=els.specialScheduleStart.value
+  const end=els.specialScheduleEnd.value
+  if(!fecha||!start||!end){
+    els.specialScheduleStatus.className='status error'
+    els.specialScheduleStatus.textContent='Completa todos los campos.'
+    return
+  }
+  if(end<start){
+    els.specialScheduleStatus.className='status error'
+    els.specialScheduleStatus.textContent='El último turno no puede ser anterior a la hora inicial.'
+    return
+  }
+  els.specialScheduleStatus.className='status'
+  els.specialScheduleStatus.textContent='Guardando...'
+  const marker=specialMarker(stylist)
+  const {data:existing}=await supabase.from('disponibilidad').select('id,hora_inicio').eq('fecha',fecha)
+  const old=(existing||[]).filter(r=>String(r.hora_inicio||'').endsWith(':'+marker))
+  if(old.length){
+    await supabase.from('disponibilidad').delete().in('id',old.map(r=>r.id))
+  }
+  const {error}=await supabase.from('disponibilidad').insert({
+    fecha,
+    hora_inicio:specialDbTime(start,stylist),
+    hora_fin:specialDbTime(end,stylist),
+    activo:true
+  })
+  if(error){
+    console.error(error)
+    els.specialScheduleStatus.className='status error'
+    els.specialScheduleStatus.textContent='No pudimos guardar el horario especial.'
+    return
+  }
+  els.specialScheduleStatus.className='status success'
+  els.specialScheduleStatus.textContent='Horario especial guardado.'
+  els.specialScheduleForm.reset()
+  els.specialScheduleDate.min=todayStr()
+  await loadSpecialSchedules()
+}
 
 async function loadAvailabilityAdmin(){
   els.availabilityList.innerHTML=''
@@ -448,6 +530,7 @@ function setAdminDateMins(){
   els.availabilityDate.min=t
   els.availabilityEndDate.min=t
   els.blockDate.min=t
+  if(els.specialScheduleDate) els.specialScheduleDate.min=t
 }
 els.availabilityDate.addEventListener('change',()=>{
   els.availabilityEndDate.min=els.availabilityDate.value||todayStr()
@@ -512,7 +595,7 @@ els.startButton.onclick=()=>showScreen('services');els.adminAccessButton.onclick
 els.servicesContinue.onclick=async()=>{state.date='';state.startMinutes=null;state.month=startOfMonth(new Date());await loadMonthAvailability();els.timesGrid.innerHTML='';els.timesStatus.textContent='Elige una fecha disponible.';els.datetimeContinue.disabled=true;showScreen('datetime')}
 els.prevMonth.onclick=async()=>{state.month=new Date(state.month.getFullYear(),state.month.getMonth()-1,1);await loadMonthAvailability()};els.nextMonth.onclick=async()=>{state.month=new Date(state.month.getFullYear(),state.month.getMonth()+1,1);await loadMonthAvailability()}
 els.datetimeContinue.onclick=()=>{renderConfirmation();showScreen('confirm')};els.bookingForm.onsubmit=saveBooking;els.loginForm.onsubmit=login;els.logoutButton.onclick=logout
-els.availabilityForm.onsubmit=addAvailability;els.refreshAvailability.onclick=loadAvailabilityAdmin;els.refreshAppointments.onclick=loadAppointments;els.blockForm.onsubmit=addBlock;els.refreshBlocks.onclick=loadBlocks;els.installAppButton.onclick=installStylistApp;els.shareAgendaButton.onclick=shareBookingLink
+els.availabilityForm.onsubmit=addAvailability;els.refreshAvailability.onclick=loadAvailabilityAdmin;if(els.specialScheduleForm)els.specialScheduleForm.onsubmit=saveSpecialSchedule;if(els.refreshSpecialSchedules)els.refreshSpecialSchedules.onclick=loadSpecialSchedules;els.refreshAppointments.onclick=loadAppointments;els.blockForm.onsubmit=addBlock;els.refreshBlocks.onclick=loadBlocks;els.installAppButton.onclick=installStylistApp;els.shareAgendaButton.onclick=shareBookingLink
 
 await loadServices()
 setAdminDateMins()
