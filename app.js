@@ -64,6 +64,10 @@ function selectedServices(){return [state.hands,state.feet].filter(Boolean)}
 function totalDuration(){return selectedServices().reduce((s,x)=>s+Number(x.duracion_minutos||0),0)}
 function overlap(a1,a2,b1,b2){return a1<b2&&a2>b1}
 function todayStr(){return toDateStr(new Date())}
+function isSpecialAngelaOct29(date,start){
+  const stylist=(window.STUDIO_SELECTED_STYLIST||sessionStorage.getItem('studioBeautyStylist')||'Ángela')
+  return stylist==='Ángela' && date==='2026-10-29' && start===420
+}
 function isSpecialAngelaNov3(date){
   const stylist=(window.STUDIO_SELECTED_STYLIST||sessionStorage.getItem('studioBeautyStylist')||'Ángela')
   return stylist==='Ángela' && date==='2026-11-03'
@@ -130,6 +134,7 @@ async function renderTimes(){
     const [windows,busy]=await Promise.all([getWindows(state.date),getBusy(state.date)]), duration=totalDuration(), starts=[]
     windows.forEach(w=>{for(let s=w.start;s+duration<=w.end;s+=SLOT_STEP){if(!busy.some(b=>overlap(s,s+duration,b.start,b.end)))starts.push(s)}})
     if(isSpecialAngelaEight(state.date,480)) starts.push(480)
+    if(isSpecialAngelaOct29(state.date,420)) starts.push(420)
     if(isSpecialAngelaNov3(state.date)){
       for(let s=420;s<720;s+=30){
         if(!busy.some(b=>overlap(s,s+Math.min(duration,30),b.start,b.end))) starts.push(s)
@@ -149,7 +154,7 @@ async function saveBooking(e){
   e.preventDefault(); const sel=selectedServices(); if(!sel.length||!state.date||state.startMinutes===null)return
   els.formStatus.className='status';els.formStatus.textContent='Guardando tu cita...'
   try{
-    const busy=await getBusy(state.date),end=state.startMinutes+totalDuration();if(!isSpecialAngelaEight(state.date,state.startMinutes) && busy.some(b=>overlap(state.startMinutes,end,b.start,b.end)))throw new Error('Ese horario acaba de ocuparse. Regresa y elige otro.')
+    const busy=await getBusy(state.date),end=state.startMinutes+totalDuration();if(!isSpecialAngelaEight(state.date,state.startMinutes) && !isSpecialAngelaOct29(state.date,state.startMinutes) && busy.some(b=>overlap(state.startMinutes,end,b.start,b.end)))throw new Error('Ese horario acaba de ocuparse. Regresa y elige otro.')
     const citaId=Date.now()
     const payload={id:citaId,nombre_cliente:els.nameInput.value.trim(),whatsapp:els.phoneInput.value.trim(),servicio_id:sel[0].id,fecha:state.date,hora_inicio:dbTime(state.startMinutes),hora_fin:dbTime(end),estado:'confirmada'}
     const {error}=await supabase.from('Citas').insert(payload);if(error)throw error
