@@ -64,6 +64,13 @@ function activeScheduleFor(date){
 
 async function scheduleRowsFor(date){
   const stylist=currentStylist();
+  const duration=selectedDuration();
+  const rows=[];
+  const day=activeScheduleFor(date);
+
+  if(day?.morning) rows.push({hora_inicio:minsToDb(day.morning.start),hora_fin:minsToDb(day.morning.end)});
+  if(day?.afternoon) rows.push({hora_inicio:minsToDb(day.afternoon.start),hora_fin:minsToDb(day.afternoon.lastStart+duration)});
+
   const marker=specialMarkerForStylist(stylist);
   try{
     const url=new URL('https://ywbmlsfxvytdmnkyjial.supabase.co/rest/v1/disponibilidad');
@@ -75,19 +82,12 @@ async function scheduleRowsFor(date){
     const data=await resp.json().catch(()=>[]);
     const special=(data||[]).find(r=>String(r.hora_inicio||'').endsWith(':'+marker));
     if(special){
-      const duration=selectedDuration();
-      const start=parseDbMinutes(special.hora_inicio);
-      const lastStart=parseDbMinutes(special.hora_fin);
-      return [{hora_inicio:minsToDb(start),hora_fin:minsToDb(lastStart+duration)}];
+      const specialStart=parseDbMinutes(special.hora_inicio);
+      const specialLastStart=parseDbMinutes(special.hora_fin);
+      rows.push({hora_inicio:minsToDb(specialStart),hora_fin:minsToDb(specialLastStart+duration)});
     }
   }catch(e){console.error('Horario especial',e)}
 
-  const day=activeScheduleFor(date);
-  if(!day)return [];
-  const duration=selectedDuration();
-  const rows=[];
-  if(day.morning) rows.push({hora_inicio:minsToDb(day.morning.start),hora_fin:minsToDb(day.morning.end)});
-  if(day.afternoon) rows.push({hora_inicio:minsToDb(day.afternoon.start),hora_fin:minsToDb(day.afternoon.lastStart+duration)});
   return rows;
 }
 
