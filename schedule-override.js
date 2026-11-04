@@ -50,6 +50,9 @@ function parseDateFilter(values,prefix){
   return raw?raw.slice(prefix.length+1):null;
 }
 function currentStylist(){return sessionStorage.getItem('studioBeautyStylist')||window.STUDIO_SELECTED_STYLIST||'Ángela'}
+function isLisethBlockedPeriod(date){
+  return currentStylist()==='Liseth' && date>='2026-11-01' && date<='2026-12-31'
+}
 function specialMarkerForStylist(stylist){return stylist==='Liseth'?'02':'01'}
 function isSpecialRowForStylist(row,stylist){
   return String(row?.hora_inicio||'').endsWith(':'+specialMarkerForStylist(stylist))
@@ -57,6 +60,7 @@ function isSpecialRowForStylist(row,stylist){
 
 function activeScheduleFor(date){
   const stylist=currentStylist();
+  if(isLisethBlockedPeriod(date)) return null;
   const [y,m,d]=date.split('-').map(Number);
   const dow=new Date(y,m-1,d).getDay();
   return STYLISTS[stylist]?.schedule?.[dow]||null;
@@ -64,6 +68,7 @@ function activeScheduleFor(date){
 
 async function scheduleRowsFor(date){
   const stylist=currentStylist();
+  if(isLisethBlockedPeriod(date)) return [];
   const duration=selectedDuration();
   const rows=[];
   const day=activeScheduleFor(date);
@@ -121,8 +126,9 @@ window.fetch=async function(input,init={}){
         const rows=[];
         const cursor=new Date(start);
         while(cursor<=end){
+          const date=localDateStr(cursor);
           const dow=cursor.getDay();
-          if(STYLISTS[currentStylist()]?.schedule?.[dow])rows.push({fecha:localDateStr(cursor)});
+          if(!isLisethBlockedPeriod(date) && STYLISTS[currentStylist()]?.schedule?.[dow])rows.push({fecha:date});
           cursor.setDate(cursor.getDate()+1);
         }
         return new Response(JSON.stringify(rows),{status:200,headers:{'Content-Type':'application/json'}});
