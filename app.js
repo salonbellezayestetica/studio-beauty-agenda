@@ -151,17 +151,29 @@ function renderConfirmation(){
   const sel=selectedServices();els.confirmServices.innerHTML=sel.map(s=>`<div class="confirm-service"><strong>${escapeHtml(s.nombre)}</strong><span>${fmtMoney(s.precio)}</span></div>`).join('')
   els.summaryDate.textContent=fmtDate(state.date);els.summaryTime.textContent=fmtTime(state.startMinutes)
 }
+let savingBooking=false
 async function saveBooking(e){
-  e.preventDefault(); const sel=selectedServices(); if(!sel.length||!state.date||state.startMinutes===null)return
+  e.preventDefault()
+  if(savingBooking)return
+  const sel=selectedServices();if(!sel.length||!state.date||state.startMinutes===null)return
+  savingBooking=true
+  const submitButton=els.bookingForm.querySelector('[type="submit"]')
+  if(submitButton)submitButton.disabled=true
   els.formStatus.className='status';els.formStatus.textContent='Guardando tu cita...'
   try{
     const busy=await getBusy(state.date),end=state.startMinutes+totalDuration();if(!isSpecialAngelaEight(state.date,state.startMinutes) && !isSpecialAngelaOct29(state.date,state.startMinutes) && busy.some(b=>overlap(state.startMinutes,end,b.start,b.end)))throw new Error('Ese horario acaba de ocuparse. Regresa y elige otro.')
     const citaId=Date.now()
     const payload={id:citaId,nombre_cliente:els.nameInput.value.trim(),whatsapp:els.phoneInput.value.trim(),servicio_id:sel[0].id,fecha:state.date,hora_inicio:dbTime(state.startMinutes),hora_fin:dbTime(end),estado:'confirmada'}
     const {error}=await supabase.from('Citas').insert(payload);if(error)throw error
-    const {error:linkError}=await supabase.from('cita_servicios').insert(sel.map(s=>({cita_id:citaId,servicio_id:s.id})));if(linkError)throw linkError
+    const {error:linkError}=await supabase.from('cita_servicios').insert(sel.map(s=>({cita_id:citaId,servicio_id:s.id})));if(linkError){
+      console.error('La reserva existe, pero falló el registro de sus servicios:',linkError)
+      els.successText.textContent='La cita fue registrada, pero hubo un problema con los servicios. Comunícate con el salón para confirmar los detalles. No vuelvas a reservar el mismo horario.'
+      showScreen('success')
+      return
+    }
     els.successText.textContent=`${sel.map(s=>s.nombre).join(' + ')} · ${fmtDate(state.date)} · ${fmtTime(state.startMinutes)}`;showScreen('success')
-  }catch(err){console.error(err);els.formStatus.className='status error';els.formStatus.textContent=err.message?.includes('acaba')?err.message:'No pudimos guardar la cita. Intenta nuevamente.'}
+  }catch(err){console.error(err);els.formStatus.className='status error';els.formStatus.textContent=err.message?.includes('acaba')?err.message:'No pudimos guardar la cita. Revisa tus citas antes de intentar nuevamente.'}
+  finally{savingBooking=false;if(submitButton)submitButton.disabled=false}
 }
 function resetBooking(){state.hands=null;state.feet=null;state.date='';state.startMinutes=null;els.nameInput.value='';els.phoneInput.value='';renderServices();showScreen('home')}
 
@@ -494,7 +506,7 @@ async function loadAppointments(){
         return
       }
       status.classList.add('success')
-      status.textContent='Cita modificada correctamente.'
+      status.textContent='Cita modificada en la agenda. Comprueba también el evento en Google Calendar: la sincronización automática aún no está configurada.'
       await loadAppointments()
     }
     item.querySelector('.cancel-appointment-btn').onclick=async()=>{
@@ -513,7 +525,7 @@ async function loadAppointments(){
         return
       }
       els.appointmentsStatus.className='status success'
-      els.appointmentsStatus.textContent='Cita cancelada. El horario quedó libre.'
+      els.appointmentsStatus.textContent='Cita cancelada en la agenda. Comprueba y elimina también su evento en Google Calendar, si existe.'
       await loadAppointments()
     }
     els.appointmentsList.appendChild(item)
